@@ -9,7 +9,7 @@ namespace Main.Infrastructure.States
     public class BootstrapState : IState
     {
         private const string InitialScene = "Initial";
-        private const string GameplayScene = "GameplayScene";
+        private const string MainScene = "Main";
         
         private readonly SceneLoader _sceneLoader;
         private readonly List<IPreloadedInBootstrap> _toPreload;
@@ -34,7 +34,7 @@ namespace Main.Infrastructure.States
 
         private void EnterLoadLevel()
         {
-            StateMachine.Enter<LoadLevelState, string>(GameplayScene);
+            StateMachine.Enter<LoadLevelState, string>(MainScene);
         }
     }
 }
