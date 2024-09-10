@@ -59,6 +59,13 @@ namespace Base.Instantiating
             Register(instance);
             return instance;
         }
+        
+        protected T InstantiateRegistered<T>(T prefab, Transform parent) where T : MonoBehaviour
+        {
+            T instance = _instantiateService.Instantiate(prefab, parent);
+            Register(instance.gameObject);
+            return instance;
+        }
 
         protected async Task<GameObject> InstantiateRegistered(string path)
         {
