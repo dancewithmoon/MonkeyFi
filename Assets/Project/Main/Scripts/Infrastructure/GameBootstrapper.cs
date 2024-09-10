@@ -1,11 +1,13 @@
 ﻿using Base;
 using Base.States;
-using Main.Infrastructure.Factory;
-using Main.Infrastructure.States;
+using Infrastructure.Factory;
+using Infrastructure.States;
+using Infrastructure.StaticData.Services;
+using Services;
 using UnityEngine;
 using Zenject;
 
-namespace Main.Infrastructure
+namespace Infrastructure
 {
     public class GameBootstrapper : MonoInstaller
     {
@@ -26,6 +28,8 @@ namespace Main.Infrastructure
         private void BindServices()
         {
             Container.BindInterfacesTo<GameFactory>().AsSingle();
+            Container.BindInterfacesTo<StaticDataService>().AsSingle();
+            Container.BindInterfacesTo<WindowService>().AsSingle();
         }
 
         private void BindStates()

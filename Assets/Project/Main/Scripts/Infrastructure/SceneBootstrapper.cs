@@ -1,7 +1,7 @@
 ﻿using Base.Services;
 using Zenject;
 
-namespace Main.Infrastructure
+namespace Infrastructure
 {
     public class SceneBootstrapper : MonoInstaller
     {

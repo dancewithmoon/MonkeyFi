@@ -1,6 +1,6 @@
 ﻿using Base.States;
 
-namespace Main.Infrastructure.States
+namespace Infrastructure.States
 {
     public class GameLoopState : IState
     {

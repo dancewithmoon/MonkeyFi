@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Base.Services;
 using Base.States;
 
-namespace Main.Infrastructure.States
+namespace Infrastructure.States
 {
     public class BootstrapState : IState
     {

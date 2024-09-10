@@ -3,9 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Base.Services;
 using Base.States;
-using Main.Infrastructure.Factory;
+using Infrastructure.Factory;
+using Services;
 
-namespace Main.Infrastructure.States
+namespace Infrastructure.States
 {
     public class LoadLevelState : IPayloadedState<string>
     {
@@ -13,6 +14,7 @@ namespace Main.Infrastructure.States
         private readonly List<IPreloadedInLoadLevel> _toPreload;
         private readonly List<ICleanUp> _toCleanUp;
         private readonly IGameFactory _gameFactory;
+        private readonly IWindowService _windowService;
 
         private Task _preload;
         private string _currentLevel;
@@ -20,12 +22,13 @@ namespace Main.Infrastructure.States
         public IGameStateMachine StateMachine { get; set; }
 
         public LoadLevelState(SceneLoader sceneLoader, List<IPreloadedInLoadLevel> toPreload, List<ICleanUp> toCleanUp,
-            IGameFactory gameFactory)
+            IGameFactory gameFactory, IWindowService windowService)
         {
             _sceneLoader = sceneLoader;
             _toPreload = toPreload;
             _toCleanUp = toCleanUp;
             _gameFactory = gameFactory;
+            _windowService = windowService;
         }
 
         public void Enter(string sceneName)
@@ -50,6 +53,7 @@ namespace Main.Infrastructure.States
         {
             await _preload;
             _gameFactory.CreateUIRoot();
+            _windowService.ShowWindow(WindowType.Clicker);
             StateMachine.Enter<GameLoopState>();
         }
     }
