@@ -1,5 +1,6 @@
 ﻿using Base;
 using Base.States;
+using Main.Infrastructure.Factory;
 using Main.Infrastructure.States;
 using UnityEngine;
 using Zenject;
@@ -24,7 +25,7 @@ namespace Main.Infrastructure
 
         private void BindServices()
         {
-            
+            Container.BindInterfacesTo<GameFactory>().AsSingle();
         }
 
         private void BindStates()

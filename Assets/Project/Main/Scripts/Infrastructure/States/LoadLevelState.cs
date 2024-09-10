@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Base.Services;
 using Base.States;
+using Main.Infrastructure.Factory;
 
 namespace Main.Infrastructure.States
 {
@@ -11,17 +12,20 @@ namespace Main.Infrastructure.States
         private readonly SceneLoader _sceneLoader;
         private readonly List<IPreloadedInLoadLevel> _toPreload;
         private readonly List<ICleanUp> _toCleanUp;
+        private readonly IGameFactory _gameFactory;
 
         private Task _preload;
         private string _currentLevel;
         
         public IGameStateMachine StateMachine { get; set; }
 
-        public LoadLevelState(SceneLoader sceneLoader, List<IPreloadedInLoadLevel> toPreload, List<ICleanUp> toCleanUp)
+        public LoadLevelState(SceneLoader sceneLoader, List<IPreloadedInLoadLevel> toPreload, List<ICleanUp> toCleanUp,
+            IGameFactory gameFactory)
         {
             _sceneLoader = sceneLoader;
             _toPreload = toPreload;
             _toCleanUp = toCleanUp;
+            _gameFactory = gameFactory;
         }
 
         public void Enter(string sceneName)
@@ -45,6 +49,7 @@ namespace Main.Infrastructure.States
         private async void OnLoaded()
         {
             await _preload;
+            _gameFactory.CreateUIRoot();
             StateMachine.Enter<GameLoopState>();
         }
     }
