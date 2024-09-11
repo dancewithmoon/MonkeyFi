@@ -11,9 +11,10 @@ namespace Infrastructure.Factory
     public class GameFactory : BaseFactory, IGameFactory
     {
         private const string UIRootPath = "UI/UIRoot";
+        private const string HudOverlayPath = "UI/HUDOverlay";
 
         private readonly IStaticDataService _staticDataService;
-        private GameObject _uiRoot;
+        private Transform _uiRoot;
         
         public GameFactory(IAssets assets, IInstantiateService instantiateService, IStaticDataService staticDataService) : base(assets, instantiateService)
         {
@@ -22,16 +23,26 @@ namespace Infrastructure.Factory
 
         public override async Task Preload()
         {
-            await Task.WhenAll(assets.Load<GameObject>(UIRootPath));
+            await Task.WhenAll(
+                assets.Load<GameObject>(UIRootPath), 
+                assets.Load<GameObject>(HudOverlayPath));
         }
 
-        public async void CreateUIRoot() => 
-            _uiRoot = await InstantiateRegistered(UIRootPath);
+        public async void CreateUIRoot()
+        {
+            GameObject uiRootObj = await InstantiateRegistered(UIRootPath);
+            _uiRoot = uiRootObj.transform;
+        }
 
         public BaseWindow CreateWindow(WindowType windowType)
         {
             BaseWindow prefab = _staticDataService.GetWindowPrefab(windowType);
-            return InstantiateRegistered(prefab, _uiRoot.transform);
+            return InstantiateRegistered(prefab, _uiRoot);
+        }
+
+        public async void CreateHudOverlay()
+        {
+            await InstantiateRegistered(HudOverlayPath, _uiRoot);
         }
     }
 }

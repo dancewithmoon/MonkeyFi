@@ -7,5 +7,6 @@ namespace Infrastructure.Factory
     {
         void CreateUIRoot();
         public BaseWindow CreateWindow(WindowType windowType);
+        void CreateHudOverlay();
     }
 }
