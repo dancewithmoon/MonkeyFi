@@ -2,6 +2,8 @@
 {
     public enum WindowType
     {
-        Clicker
+        None = 0,
+        Clicker = 1,
+        Friends = 2
     }
 }
