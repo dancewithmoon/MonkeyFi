@@ -4,7 +4,7 @@ using Object = UnityEngine.Object;
 
 namespace Services.Telegram
 {
-    public class TelegramService
+    public class TelegramService : ITelegramService
     {
         public TelegramUserData TelegramUser { get; private set; }
         

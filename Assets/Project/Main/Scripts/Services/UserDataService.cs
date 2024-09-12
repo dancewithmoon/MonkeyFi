@@ -4,10 +4,10 @@ namespace Services
 {
     public class UserDataService
     {
-        private readonly TelegramService _telegramService;
+        private readonly ITelegramService _telegramService;
         public string Username => _telegramService.TelegramUser.Username;
         
-        public UserDataService(TelegramService telegramService)
+        public UserDataService(ITelegramService telegramService)
         {
             _telegramService = telegramService;
         }

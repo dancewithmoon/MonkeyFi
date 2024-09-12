@@ -1,4 +1,5 @@
-﻿using Base;
+﻿using System;
+using Base;
 using Base.States;
 using Infrastructure.Factory;
 using Infrastructure.States;
@@ -31,7 +32,7 @@ namespace Infrastructure
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<StaticDataService>().AsSingle();
             Container.BindInterfacesTo<WindowService>().AsSingle();
-            Container.Bind<TelegramService>().AsSingle();
+            Container.Bind<ITelegramService>().To(GetTelegramServiceImplementation()).AsSingle();
             Container.Bind<UserDataService>().AsSingle();
         }
 
@@ -47,5 +48,10 @@ namespace Infrastructure
             _game = Container.Resolve<Game>();
             _game.StateMachine.Enter<BootstrapState>();
         }
+
+        private Type GetTelegramServiceImplementation() => 
+            Application.isEditor ? 
+                typeof(MockedTelegramService) : 
+                typeof(TelegramService);
     }
 }
