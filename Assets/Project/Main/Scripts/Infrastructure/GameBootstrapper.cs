@@ -4,6 +4,7 @@ using Infrastructure.Factory;
 using Infrastructure.States;
 using Infrastructure.StaticData.Services;
 using Services;
+using Services.Telegram;
 using UnityEngine;
 using Zenject;
 
@@ -24,12 +25,14 @@ namespace Infrastructure
             
             Container.Bind<Game>().AsSingle();
         }
-
+        
         private void BindServices()
         {
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<StaticDataService>().AsSingle();
             Container.BindInterfacesTo<WindowService>().AsSingle();
+            Container.Bind<TelegramService>().AsSingle();
+            Container.Bind<UserDataService>().AsSingle();
         }
 
         private void BindStates()
