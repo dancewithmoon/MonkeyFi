@@ -20,8 +20,8 @@ namespace UI.Windows
         {
             _button.onClick.RemoveListener(OnClick);
         }
-    
-        private void Start()
+
+        public override void DrawWindow()
         {
             UpdateCounterView();
         }
