@@ -16,7 +16,7 @@ namespace Services
             _gameFactory = gameFactory;
         }
 
-        public void ShowWindow(WindowType windowType)
+        public void ShowWindow(WindowType windowType, bool callDraw = true)
         {
             HideWindow(_currentWindow);
 
@@ -29,6 +29,8 @@ namespace Services
                 _windows[windowType] = _gameFactory.CreateWindow(windowType);
             
             _currentWindow = windowType;
+            if(callDraw)
+                _windows[windowType].DrawWindow();
         }
 
         public void ShowWindow<TPayload>(WindowType windowType, TPayload payload)
@@ -38,9 +40,11 @@ namespace Services
             if(windowType == WindowType.None)
                 return;
             
-            ShowWindow(windowType);
+            ShowWindow(windowType, false);
             if (_windows[windowType] is PayloadedWindow<TPayload> payloadedWindow)
                 payloadedWindow.SetPayload(payload);
+            
+            _windows[windowType].DrawWindow();
         }
 
         public void HideWindow(WindowType windowType)

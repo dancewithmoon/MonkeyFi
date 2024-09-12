@@ -15,5 +15,10 @@ namespace UI.Windows
             get => _canvas.enabled;
             set => _canvas.enabled = value;
         }
+
+        public virtual void DrawWindow()
+        {
+            
+        }
     }
 }
