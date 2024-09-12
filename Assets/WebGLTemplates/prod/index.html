@@ -59,6 +59,7 @@
 
     <script>
     if(window.Telegram.WebApp){
+        window.Telegram.WebApp.expand();
         window.Telegram.WebApp.onEvent('qrTextReceived',async (obj)=>{
             console.log('#qrTextReceived',obj)
             if( window.unityInstance){
