@@ -1,9 +1,11 @@
-﻿using Base;
+﻿using System;
+using Base;
 using Base.States;
 using Infrastructure.Factory;
 using Infrastructure.States;
 using Infrastructure.StaticData.Services;
 using Services;
+using Services.Telegram;
 using UnityEngine;
 using Zenject;
 
@@ -24,12 +26,14 @@ namespace Infrastructure
             
             Container.Bind<Game>().AsSingle();
         }
-
+        
         private void BindServices()
         {
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<StaticDataService>().AsSingle();
             Container.BindInterfacesTo<WindowService>().AsSingle();
+            Container.Bind<ITelegramService>().To(GetTelegramServiceImplementation()).AsSingle();
+            Container.Bind<UserDataService>().AsSingle();
         }
 
         private void BindStates()
@@ -44,5 +48,10 @@ namespace Infrastructure
             _game = Container.Resolve<Game>();
             _game.StateMachine.Enter<BootstrapState>();
         }
+
+        private Type GetTelegramServiceImplementation() => 
+            Application.isEditor ? 
+                typeof(MockedTelegramService) : 
+                typeof(TelegramService);
     }
 }

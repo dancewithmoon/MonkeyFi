@@ -5,6 +5,7 @@ using Base.Services;
 using Base.States;
 using Infrastructure.Factory;
 using Services;
+using Services.Telegram;
 
 namespace Infrastructure.States
 {
@@ -15,6 +16,7 @@ namespace Infrastructure.States
         private readonly List<ICleanUp> _toCleanUp;
         private readonly IGameFactory _gameFactory;
         private readonly IWindowService _windowService;
+        private readonly ITelegramService _telegramService;
 
         private Task _preload;
         private string _currentLevel;
@@ -22,13 +24,14 @@ namespace Infrastructure.States
         public IGameStateMachine StateMachine { get; set; }
 
         public LoadLevelState(SceneLoader sceneLoader, List<IPreloadedInLoadLevel> toPreload, List<ICleanUp> toCleanUp,
-            IGameFactory gameFactory, IWindowService windowService)
+            IGameFactory gameFactory, IWindowService windowService, ITelegramService telegramService)
         {
             _sceneLoader = sceneLoader;
             _toPreload = toPreload;
             _toCleanUp = toCleanUp;
             _gameFactory = gameFactory;
             _windowService = windowService;
+            _telegramService = telegramService;
         }
 
         public void Enter(string sceneName)
@@ -46,6 +49,7 @@ namespace Infrastructure.States
 
         private async Task Preload()
         {
+            _telegramService.Initialize();
             await Task.WhenAll(_toPreload.Select(obj => obj.Preload()));
         }
 
