@@ -54,7 +54,6 @@
       }).then((unityInstance) => {
         console.log('Instance created',window.Telegram.WebApp);
                 window.unityInstance = unityInstance;
-                window.unityInstance.SendMessage("TelegramController", "SetWebAppUser", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
             });
     </script>
 
@@ -63,7 +62,7 @@
         window.Telegram.WebApp.onEvent('qrTextReceived',async (obj)=>{
             console.log('#qrTextReceived',obj)
             if( window.unityInstance){
-                window.unityInstance.SendMessage("TelegramController", "OnQrDetected", obj.data);
+                window.unityInstance.SendMessage("TelegramBridge", "ReceiveUserData", obj.data);
             }
         })
     }
