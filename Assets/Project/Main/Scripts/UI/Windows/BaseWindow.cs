@@ -13,7 +13,24 @@ namespace UI.Windows
         public bool Visible
         {
             get => _canvas.enabled;
-            set => _canvas.enabled = value;
+            set
+            {
+                _canvas.enabled = value;
+                if(value)
+                    OnWindowShow();
+                else
+                    OnWindowHide();
+            }
+        }
+
+        private void Start() => OnWindowShow();
+
+        protected virtual void OnWindowShow()
+        {
+        }
+
+        protected virtual void OnWindowHide()
+        {
         }
 
         public virtual void DrawWindow()
