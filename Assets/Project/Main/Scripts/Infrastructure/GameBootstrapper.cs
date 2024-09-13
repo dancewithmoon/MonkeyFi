@@ -4,8 +4,10 @@ using Base.States;
 using Infrastructure.Factory;
 using Infrastructure.States;
 using Infrastructure.StaticData.Services;
+using Models;
 using Services;
 using Services.Telegram;
+using Services.UserProgress;
 using UnityEngine;
 using Zenject;
 
@@ -19,12 +21,18 @@ namespace Infrastructure
         {
             Application.targetFrameRate = 60;
 
+            BindModels();
             BindServices();
             BindStates();
 
             Container.Bind<IGameStateMachine>().To<GameStateMachine>().AsSingle();
             
             Container.Bind<Game>().AsSingle();
+        }
+
+        private void BindModels()
+        {
+            Container.Bind<ClickerModel>().AsSingle();
         }
         
         private void BindServices()
@@ -34,12 +42,13 @@ namespace Infrastructure
             Container.BindInterfacesTo<WindowService>().AsSingle();
             Container.Bind<ITelegramService>().To(GetTelegramServiceImplementation()).AsSingle();
             Container.Bind<UserDataService>().AsSingle();
-            Container.Bind<UserProgressService>().AsSingle();
+            Container.Bind<IUserProgressService>().To<MockedUserProgressService>().AsSingle();
         }
 
         private void BindStates()
         {
             Container.Bind<IExitableState>().To<BootstrapState>().AsSingle();
+            Container.Bind<IExitableState>().To<LoadProgressState>().AsSingle();
             Container.Bind<IExitableState>().To<LoadLevelState>().AsSingle();
             Container.Bind<IExitableState>().To<GameLoopState>().AsSingle();
         }

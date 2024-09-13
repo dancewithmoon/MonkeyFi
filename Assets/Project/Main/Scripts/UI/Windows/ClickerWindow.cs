@@ -1,4 +1,4 @@
-﻿using Services;
+﻿using Models;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,45 +10,51 @@ namespace UI.Windows
     {
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _counterText;
-        [SerializeField] private int _maxCount;
+        [SerializeField] private TMP_Text _energyText;
         
-        private UserProgressService _userProgressService;
+        [SerializeField] private int _maxCount;
+
+        private ClickerModel _clickerModel;
 
         [Inject]
-        private void Construct(UserProgressService userProgressService)
+        private void Construct(ClickerModel clickerModel)
         {
-            _userProgressService = userProgressService;
+            _clickerModel = clickerModel;
         }
         
         protected override void OnWindowShow()
         {
             _button.onClick.AddListener(OnClick);
-            _userProgressService.OnCounterUpdateEvent += UpdateCounterView;
+            _clickerModel.OnStateChangedEvent += DrawWindow;
         }
 
         protected override void OnWindowHide()
         {
             _button.onClick.RemoveListener(OnClick);
-            _userProgressService.OnCounterUpdateEvent -= UpdateCounterView;
+            _clickerModel.OnStateChangedEvent -= DrawWindow;
         }
 
         public override void DrawWindow()
         {
-            UpdateCounterView();
+            DrawEnergy();
+            DrawCounter();
         }
 
-        private void OnClick() => 
-            _userProgressService.IncreaseCounter();
+        private void DrawEnergy() => 
+            _energyText.text = $"{_clickerModel.CurrentEnergy}/{_clickerModel.MaxEnergy}";
 
-        private void UpdateCounterView()
+        private void DrawCounter()
         {
-            if (_userProgressService.Counter >= _maxCount)
+            if (_clickerModel.Points >= _maxCount)
             {
                 _counterText.text = "Stop wasting your time, bruh...";
                 return;
             }
         
-            _counterText.text = _userProgressService.Counter.ToString();
+            _counterText.text = _clickerModel.Points.ToString();
         }
+
+        private void OnClick() => 
+            _clickerModel.Click();
     }
 }
