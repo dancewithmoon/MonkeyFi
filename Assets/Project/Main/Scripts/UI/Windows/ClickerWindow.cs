@@ -1,6 +1,8 @@
-﻿using TMPro;
+﻿using Services;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace UI.Windows
 {
@@ -9,16 +11,25 @@ namespace UI.Windows
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _counterText;
         [SerializeField] private int _maxCount;
-        private int _counter = 0;
-    
-        private void OnEnable()
+        
+        private UserProgressService _userProgressService;
+
+        [Inject]
+        private void Construct(UserProgressService userProgressService)
+        {
+            _userProgressService = userProgressService;
+        }
+        
+        protected override void OnWindowShow()
         {
             _button.onClick.AddListener(OnClick);
+            _userProgressService.OnCounterUpdateEvent += UpdateCounterView;
         }
 
-        private void OnDisable()
+        protected override void OnWindowHide()
         {
             _button.onClick.RemoveListener(OnClick);
+            _userProgressService.OnCounterUpdateEvent -= UpdateCounterView;
         }
 
         public override void DrawWindow()
@@ -26,21 +37,18 @@ namespace UI.Windows
             UpdateCounterView();
         }
 
-        private void OnClick()
-        {
-            _counter++;
-            UpdateCounterView();
-        }
+        private void OnClick() => 
+            _userProgressService.IncreaseCounter();
 
         private void UpdateCounterView()
         {
-            if (_counter >= _maxCount)
+            if (_userProgressService.Counter >= _maxCount)
             {
                 _counterText.text = "Stop wasting your time, bruh...";
                 return;
             }
         
-            _counterText.text = _counter.ToString();
+            _counterText.text = _userProgressService.Counter.ToString();
         }
     }
 }

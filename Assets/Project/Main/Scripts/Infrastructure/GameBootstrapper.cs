@@ -34,6 +34,7 @@ namespace Infrastructure
             Container.BindInterfacesTo<WindowService>().AsSingle();
             Container.Bind<ITelegramService>().To(GetTelegramServiceImplementation()).AsSingle();
             Container.Bind<UserDataService>().AsSingle();
+            Container.Bind<UserProgressService>().AsSingle();
         }
 
         private void BindStates()
