@@ -1,4 +1,5 @@
-﻿using Plugins.Telegram;
+﻿using System;
+using Plugins.Telegram;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -8,6 +9,8 @@ namespace Services.Telegram
     {
         public TelegramUserData TelegramUser { get; private set; }
         
+        public event Action OnUserDataLoadedEvent;
+
         public void Initialize()
         {
             InitializeBridge();
@@ -24,6 +27,7 @@ namespace Services.Telegram
         private void OnUserDataReceive(TelegramUserDto user)
         {
             TelegramUser = new TelegramUserData(user.username);
+            OnUserDataLoadedEvent?.Invoke();
         }
     }
 }

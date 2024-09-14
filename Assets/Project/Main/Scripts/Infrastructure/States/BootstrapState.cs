@@ -33,7 +33,7 @@ namespace Infrastructure.States
 
         private void EnterLoadLevel()
         {
-            StateMachine.Enter<LoadProgressState>();
+            StateMachine.Enter<LoadUserState>();
         }
     }
 }
