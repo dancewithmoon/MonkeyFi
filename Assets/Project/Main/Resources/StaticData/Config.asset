@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Config
   m_EditorClassIdentifier: 
   _defaultMaxEnergy: 100
+  _defaultEnergyRechargePerSecond: 1

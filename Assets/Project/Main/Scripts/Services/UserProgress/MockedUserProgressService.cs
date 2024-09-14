@@ -11,7 +11,8 @@ namespace Services.UserProgress
         public int ClickerPoints { get; private set; }
         public int CurrentEnergy { get; private set; }
         public int MaxEnergy { get; private set; }
-        
+        public int EnergyRechargePerSecond { get; private set; }
+
         public event Action OnProgressLoadedEvent;
 
         public MockedUserProgressService(IStaticDataService staticDataService)
@@ -24,6 +25,10 @@ namespace Services.UserProgress
             ClickerPoints = PlayerPrefs.GetInt(nameof(ClickerPoints), 0);
             CurrentEnergy = PlayerPrefs.GetInt(nameof(CurrentEnergy), -1);
             MaxEnergy = PlayerPrefs.GetInt(nameof(MaxEnergy), -1);
+            EnergyRechargePerSecond = PlayerPrefs.GetInt(nameof(EnergyRechargePerSecond), -1);
+
+            if (EnergyRechargePerSecond < 0)
+                EnergyRechargePerSecond = _staticDataService.GetConfig().DefaultEnergyRechargePerSecond;
             
             if (MaxEnergy < 0)
                 MaxEnergy = _staticDataService.GetConfig().DefaultMaxEnergy;

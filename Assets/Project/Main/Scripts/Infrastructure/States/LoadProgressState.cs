@@ -32,7 +32,7 @@ namespace Infrastructure.States
 
         private void OnProgressLoaded()
         {
-            _clickerModel.UpdateValues(_progressService.ClickerPoints, _progressService.CurrentEnergy, _progressService.MaxEnergy);
+            _clickerModel.UpdateValues(_progressService.ClickerPoints, _progressService.CurrentEnergy, _progressService.MaxEnergy, _progressService.EnergyRechargePerSecond);
             StateMachine.Enter<LoadLevelState, string>(MainScene);
         }
     }

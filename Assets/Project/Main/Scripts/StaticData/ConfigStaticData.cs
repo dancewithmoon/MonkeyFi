@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StaticData
 {
@@ -6,7 +7,9 @@ namespace StaticData
     public class ConfigStaticData : ScriptableObject
     {
         [SerializeField] private int _defaultMaxEnergy;
-
+        [SerializeField] private int _defaultEnergyRechargePerSecond;
+        
         public int DefaultMaxEnergy => _defaultMaxEnergy;
+        public int DefaultEnergyRechargePerSecond => _defaultEnergyRechargePerSecond;
     }
 }
