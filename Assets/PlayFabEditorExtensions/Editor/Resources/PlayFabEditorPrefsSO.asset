@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d0199c11aa6f514784c5c69cd8378d8, type: 3}
+  m_Name: PlayFabEditorPrefsSO
+  m_EditorClassIdentifier: 
+  DevAccountEmail: dancewithmoon@proton.me
+  DevAccountToken: q3ppdfshsi5m8aay7415r4bn5rxnq34a5tx5j6p8gxy8spp8e1xeiqhekhpgngcr41xc77398pandek8easf9jdrgh9kkpoicduhy3k315rjkuewn75s8z1cgn3xfakkoutm59m4ujw1jxmhqj8f994td3sfpsb7tht6k14jhc33sr5zu4sp81amge9y6jjc9uhkfpbo
+  AadAuthorization: 
+  SelectedStudio: dancewithmoon
+  SdkPath: Assets/PlayFabSDK
+  EdExPath: 
+  LocalCloudScriptPath: 
+  PanelIsShown: 0
+  curMainMenuIdx: 1
+  curSubMenuIdx: 0
