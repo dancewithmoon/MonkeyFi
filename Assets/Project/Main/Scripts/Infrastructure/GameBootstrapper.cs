@@ -6,6 +6,7 @@ using Infrastructure.States;
 using Infrastructure.StaticData.Services;
 using Models;
 using Services;
+using Services.Login;
 using Services.Telegram;
 using Services.UserProgress;
 using UnityEngine;
@@ -42,13 +43,14 @@ namespace Infrastructure
             Container.BindInterfacesTo<WindowService>().AsSingle();
             Container.Bind<ITelegramService>().To(GetTelegramServiceImplementation()).AsSingle();
             Container.Bind<UserDataService>().AsSingle();
+            Container.Bind<IAuthorizationService>().To<PlayfabAuthorizationService>().AsSingle();
             Container.Bind<IUserProgressService>().To<PlayfabUserProgressService>().AsSingle();
         }
 
         private void BindStates()
         {
             Container.Bind<IExitableState>().To<BootstrapState>().AsSingle();
-            Container.Bind<IExitableState>().To<LoadUserState>().AsSingle();
+            Container.Bind<IExitableState>().To<UserAuthorizationState>().AsSingle();
             Container.Bind<IExitableState>().To<LoadProgressState>().AsSingle();
             Container.Bind<IExitableState>().To<LoadLevelState>().AsSingle();
             Container.Bind<IExitableState>().To<GameLoopState>().AsSingle();

@@ -11,30 +11,23 @@ namespace Services.UserProgress
 {
     public class PlayfabUserProgressService : IUserProgressService
     {
-        private readonly UserDataService _userDataService;
         private readonly IStaticDataService _staticDataService;
         private readonly ClickerModel _clickerModel;
-        private string _playfabId;
         private GetUserDataResult _rawProgress;
         private DateTime _lastEnergyUpdateTime;
 
         public event Action OnProgressLoadedEvent;
 
-        public PlayfabUserProgressService(UserDataService userDataService, IStaticDataService staticDataService, ClickerModel clickerModel)
+        public PlayfabUserProgressService(IStaticDataService staticDataService, ClickerModel clickerModel)
         {
-            _userDataService = userDataService;
             _staticDataService = staticDataService;
             _clickerModel = clickerModel;
         }
         
         public void LoadProgress()
         {
-            var request = new LoginWithCustomIDRequest
-            {
-                CustomId = _userDataService.Id.ToString(),
-                CreateAccount = true
-            };
-            PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnPlayfabError);
+            var request = new GetUserDataRequest();
+            PlayFabClientAPI.GetUserData(request, OnProgressLoaded, OnPlayfabError);
         }
 
         public void SaveProgress()
@@ -45,23 +38,7 @@ namespace Services.UserProgress
             };
             PlayFabClientAPI.UpdateUserData(request, OnProgressSaved, OnPlayfabError);
         }
-
-        private void OnLoginSuccess(LoginResult result)
-        {
-            _playfabId = result.PlayFabId;
-            StartProgressLoading();
-        }
-
-        private void StartProgressLoading()
-        {
-            var request = new GetUserDataRequest()
-            {
-                PlayFabId = _playfabId,
-                Keys = null
-            };
-            PlayFabClientAPI.GetUserData(request, OnProgressLoaded, OnPlayfabError);
-        }
-
+        
         private void OnProgressLoaded(GetUserDataResult result)
         {
             Debug.Log("Progress loaded: " + result);
