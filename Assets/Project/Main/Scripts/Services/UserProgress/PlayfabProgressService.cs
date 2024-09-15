@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Infrastructure.StaticData.Services;
+using Models;
 using PlayFab;
 using PlayFab.ClientModels;
 using StaticData;
@@ -11,20 +13,17 @@ namespace Services.UserProgress
     {
         private readonly UserDataService _userDataService;
         private readonly IStaticDataService _staticDataService;
+        private readonly ClickerModel _clickerModel;
         private string _playfabId;
         private GetUserDataResult _rawProgress;
 
-        public int ClickerPoints { get; private set; }
-        public int CurrentEnergy { get; private set; }
-        public int MaxEnergy { get; private set; }
-        public int EnergyRechargePerSecond { get; private set; }
-        
         public event Action OnProgressLoadedEvent;
 
-        public PlayfabProgressService(UserDataService userDataService, IStaticDataService staticDataService)
+        public PlayfabProgressService(UserDataService userDataService, IStaticDataService staticDataService, ClickerModel clickerModel)
         {
             _userDataService = userDataService;
             _staticDataService = staticDataService;
+            _clickerModel = clickerModel;
         }
         
         public void LoadProgress()
@@ -35,6 +34,15 @@ namespace Services.UserProgress
                 CreateAccount = true
             };
             PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnPlayfabError);
+        }
+
+        public void SaveProgress()
+        {
+            var request = new UpdateUserDataRequest
+            {
+                Data = GetProgressData()
+            };
+            PlayFabClientAPI.UpdateUserData(request, OnProgressSaved, OnPlayfabError);
         }
 
         private void OnLoginSuccess(LoginResult result)
@@ -55,13 +63,17 @@ namespace Services.UserProgress
 
         private void OnProgressLoaded(GetUserDataResult result)
         {
+            Debug.Log("Progress loaded: " + result);
+            
             _rawProgress = result;
 
             ConfigStaticData config = _staticDataService.GetConfig();
-            MaxEnergy = GetIntegerValue(nameof(MaxEnergy), config.DefaultMaxEnergy);
-            CurrentEnergy = GetIntegerValue(nameof(CurrentEnergy), MaxEnergy);
-            ClickerPoints = GetIntegerValue(nameof(ClickerPoints), 0);
-            EnergyRechargePerSecond = GetIntegerValue(nameof(EnergyRechargePerSecond), config.DefaultEnergyRechargePerSecond);
+            int clickerPoints = GetIntegerValue(ProgressKeys.ClickerPointsKey, 0);
+            int maxEnergy = GetIntegerValue(ProgressKeys.MaxEnergyKey, config.DefaultMaxEnergy);
+            int currentEnergy = GetIntegerValue(ProgressKeys.CurrentEnergyKey, maxEnergy);
+            int energyRechargePerSecond = GetIntegerValue(ProgressKeys.EnergyRechargePerSecondKey, config.DefaultEnergyRechargePerSecond);
+            
+            _clickerModel.UpdateValues(clickerPoints, currentEnergy, maxEnergy, energyRechargePerSecond);
             
             OnProgressLoadedEvent?.Invoke();
         }
@@ -74,6 +86,20 @@ namespace Services.UserProgress
             return defaultValue;
         }
 
+        private Dictionary<string,string> GetProgressData()
+        {
+            return new Dictionary<string, string>
+            {
+                { ProgressKeys.ClickerPointsKey, _clickerModel.Points.ToString() },
+                { ProgressKeys.CurrentEnergyKey, _clickerModel.CurrentEnergy.ToString() },
+                { ProgressKeys.MaxEnergyKey, _clickerModel.MaxEnergy.ToString() },
+                { ProgressKeys.EnergyRechargePerSecondKey, _clickerModel.EnergyRechargePerSecond.ToString() }
+            };
+        }
+
+        private void OnProgressSaved(UpdateUserDataResult result) => 
+            Debug.Log("Progress saved: " + result);
+        
         private void OnPlayfabError(PlayFabError error) => 
             Debug.LogError("Playfab error: " + error);
     }
