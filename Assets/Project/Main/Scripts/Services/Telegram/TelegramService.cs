@@ -26,7 +26,7 @@ namespace Services.Telegram
         
         private void OnUserDataReceive(TelegramUserDto user)
         {
-            TelegramUser = new TelegramUserData(user.username);
+            TelegramUser = new TelegramUserData(user.id, user.username);
             OnUserDataLoadedEvent?.Invoke();
         }
     }

@@ -8,17 +8,18 @@ namespace Models
         public int Points { get; private set; }
         public int CurrentEnergy { get; private set; }
         public int MaxEnergy { get; private set; }
-        public int EnergyRefillPerSecond { get; private set; }
-        public DateTime LastEnergyUpdateTime { get; private set; }
+        public int EnergyRechargePerSecond { get; private set; }
         public bool NeedEnergyRecharge => CurrentEnergy < MaxEnergy;
+        private DateTime LastEnergyUpdateTime { get; set; }
+        
         public event Action OnStateChangedEvent;
 
-        public void UpdateValues(int points, int currentEnergy, int maxEnergy, int energyRefillPerSecond)
+        public void UpdateValues(int points, int currentEnergy, int maxEnergy, int energyRechargePerSecond)
         {
             Points = points;
             CurrentEnergy = currentEnergy;
             MaxEnergy = maxEnergy;
-            EnergyRefillPerSecond = energyRefillPerSecond;
+            EnergyRechargePerSecond = energyRechargePerSecond;
             LastEnergyUpdateTime = DateTime.Now;
         }
         
@@ -37,7 +38,7 @@ namespace Models
         {
             DateTime now = DateTime.Now;
             TimeSpan timePassed = now - LastEnergyUpdateTime;
-            int energyRefilled = (int)(EnergyRefillPerSecond * timePassed.TotalSeconds);
+            int energyRefilled = (int)(EnergyRechargePerSecond * timePassed.TotalSeconds);
             if(energyRefilled == 0)
                 return;
             

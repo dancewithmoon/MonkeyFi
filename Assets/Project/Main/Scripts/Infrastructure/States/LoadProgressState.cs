@@ -1,5 +1,4 @@
 ﻿using Base.States;
-using Models;
 using Services.UserProgress;
 
 namespace Infrastructure.States
@@ -9,14 +8,12 @@ namespace Infrastructure.States
         private const string MainScene = "Main";
         
         private readonly IUserProgressService _progressService;
-        private readonly ClickerModel _clickerModel;
 
         public IGameStateMachine StateMachine { get; set; }
 
-        public LoadProgressState(IUserProgressService progressService, ClickerModel clickerModel)
+        public LoadProgressState(IUserProgressService progressService)
         {
             _progressService = progressService;
-            _clickerModel = clickerModel;
         }
         
         public void Enter()
@@ -32,7 +29,6 @@ namespace Infrastructure.States
 
         private void OnProgressLoaded()
         {
-            _clickerModel.UpdateValues(_progressService.ClickerPoints, _progressService.CurrentEnergy, _progressService.MaxEnergy, _progressService.EnergyRechargePerSecond);
             StateMachine.Enter<LoadLevelState, string>(MainScene);
         }
     }

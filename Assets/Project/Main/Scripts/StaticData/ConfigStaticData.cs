@@ -8,8 +8,10 @@ namespace StaticData
     {
         [SerializeField] private int _defaultMaxEnergy;
         [SerializeField] private int _defaultEnergyRechargePerSecond;
+        [SerializeField] private int _saveFrequencyInSeconds;
         
         public int DefaultMaxEnergy => _defaultMaxEnergy;
         public int DefaultEnergyRechargePerSecond => _defaultEnergyRechargePerSecond;
+        public int SaveFrequencyInSeconds => _saveFrequencyInSeconds;
     }
 }
