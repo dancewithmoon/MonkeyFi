@@ -37,11 +37,11 @@ namespace Infrastructure.States
 
         private void UpdateProgress()
         {
-            TimeSpan timePassed = DateTime.Now - _lastSaveTime;
+            TimeSpan timePassed = DateTime.UtcNow - _lastSaveTime;
             if (timePassed.TotalSeconds >= _config.SaveFrequencyInSeconds)
             {
                 _progressService.SaveProgress();
-                _lastSaveTime = DateTime.Now;
+                _lastSaveTime = DateTime.UtcNow;
             }
         }
     }

@@ -9,17 +9,18 @@ using UnityEngine;
 
 namespace Services.UserProgress
 {
-    public class PlayfabProgressService : IUserProgressService
+    public class PlayfabUserProgressService : IUserProgressService
     {
         private readonly UserDataService _userDataService;
         private readonly IStaticDataService _staticDataService;
         private readonly ClickerModel _clickerModel;
         private string _playfabId;
         private GetUserDataResult _rawProgress;
+        private DateTime _lastEnergyUpdateTime;
 
         public event Action OnProgressLoadedEvent;
 
-        public PlayfabProgressService(UserDataService userDataService, IStaticDataService staticDataService, ClickerModel clickerModel)
+        public PlayfabUserProgressService(UserDataService userDataService, IStaticDataService staticDataService, ClickerModel clickerModel)
         {
             _userDataService = userDataService;
             _staticDataService = staticDataService;
@@ -70,11 +71,11 @@ namespace Services.UserProgress
             ConfigStaticData config = _staticDataService.GetConfig();
             int clickerPoints = GetIntegerValue(ProgressKeys.ClickerPointsKey, 0);
             int maxEnergy = GetIntegerValue(ProgressKeys.MaxEnergyKey, config.DefaultMaxEnergy);
-            int currentEnergy = GetIntegerValue(ProgressKeys.CurrentEnergyKey, maxEnergy);
             int energyRechargePerSecond = GetIntegerValue(ProgressKeys.EnergyRechargePerSecondKey, config.DefaultEnergyRechargePerSecond);
+            int currentEnergy = GetEnergyValue(maxEnergy);
             
-            _clickerModel.UpdateValues(clickerPoints, currentEnergy, maxEnergy, energyRechargePerSecond);
-            
+            _clickerModel.UpdateValues(clickerPoints, currentEnergy, maxEnergy, energyRechargePerSecond, _lastEnergyUpdateTime);
+            _clickerModel.RechargeEnergy();
             OnProgressLoadedEvent?.Invoke();
         }
 
@@ -86,6 +87,18 @@ namespace Services.UserProgress
             return defaultValue;
         }
 
+        private int GetEnergyValue(int defaultValue)
+        {
+            if (_rawProgress.Data.TryGetValue(ProgressKeys.CurrentEnergyKey, out UserDataRecord currentEnergyRecord))
+            {
+                _lastEnergyUpdateTime = currentEnergyRecord.LastUpdated;
+                return int.Parse(currentEnergyRecord.Value);
+            }
+
+            _lastEnergyUpdateTime = DateTime.UtcNow;
+            return defaultValue;
+        }
+        
         private Dictionary<string,string> GetProgressData()
         {
             return new Dictionary<string, string>
