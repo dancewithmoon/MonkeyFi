@@ -1,10 +1,12 @@
 ﻿using System;
+using Services.Time;
 using UnityEngine;
 
 namespace Models
 {
     public class ClickerModel
     {
+        private readonly ITimeService _timeService;
         public int Points { get; private set; }
         public int CurrentEnergy { get; private set; }
         public int MaxEnergy { get; private set; }
@@ -13,6 +15,11 @@ namespace Models
         private DateTime LastEnergyUpdateTime { get; set; }
         
         public event Action OnStateChangedEvent;
+
+        public ClickerModel(ITimeService timeService)
+        {
+            _timeService = timeService;
+        }
 
         public void UpdateValues(int points, int currentEnergy, int maxEnergy, int energyRechargePerSecond, DateTime lastEnergyUpdateTime)
         {
@@ -30,13 +37,13 @@ namespace Models
             
             Points++;
             CurrentEnergy--;
-            LastEnergyUpdateTime = DateTime.UtcNow;
+            LastEnergyUpdateTime = _timeService.UtcNow;
             OnStateChangedEvent?.Invoke();
         }
 
         public void RechargeEnergy()
         {
-            DateTime now = DateTime.UtcNow;
+            DateTime now = _timeService.UtcNow;
             TimeSpan timePassed = now - LastEnergyUpdateTime;
             int energyRefilled = (int)(EnergyRechargePerSecond * timePassed.TotalSeconds);
             if(energyRefilled <= 0)

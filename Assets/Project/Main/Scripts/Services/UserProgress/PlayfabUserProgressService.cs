@@ -4,6 +4,7 @@ using Infrastructure.StaticData.Services;
 using Models;
 using PlayFab;
 using PlayFab.ClientModels;
+using Services.Time;
 using StaticData;
 using UnityEngine;
 
@@ -12,15 +13,17 @@ namespace Services.UserProgress
     public class PlayfabUserProgressService : IUserProgressService
     {
         private readonly IStaticDataService _staticDataService;
+        private readonly ITimeService _timeService;
         private readonly ClickerModel _clickerModel;
         private GetUserDataResult _rawProgress;
         private DateTime _lastEnergyUpdateTime;
 
         public event Action OnProgressLoadedEvent;
 
-        public PlayfabUserProgressService(IStaticDataService staticDataService, ClickerModel clickerModel)
+        public PlayfabUserProgressService(UserDataService userDataService, IStaticDataService staticDataService, ITimeService timeService, ClickerModel clickerModel)
         {
             _staticDataService = staticDataService;
+            _timeService = timeService;
             _clickerModel = clickerModel;
         }
         
@@ -72,7 +75,7 @@ namespace Services.UserProgress
                 return int.Parse(currentEnergyRecord.Value);
             }
 
-            _lastEnergyUpdateTime = DateTime.UtcNow;
+            _lastEnergyUpdateTime = _timeService.UtcNow;
             return defaultValue;
         }
         
