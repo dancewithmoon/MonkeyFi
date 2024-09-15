@@ -42,7 +42,7 @@ namespace Infrastructure
             Container.BindInterfacesTo<WindowService>().AsSingle();
             Container.Bind<ITelegramService>().To(GetTelegramServiceImplementation()).AsSingle();
             Container.Bind<UserDataService>().AsSingle();
-            Container.Bind<IUserProgressService>().To<PlayfabProgressService>().AsSingle();
+            Container.Bind<IUserProgressService>().To<PlayfabUserProgressService>().AsSingle();
         }
 
         private void BindStates()

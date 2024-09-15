@@ -8,6 +8,8 @@ namespace Services.UserProgress
 {
     public class PlayerPrefsUserProgressService : IUserProgressService
     {
+        private const string LastEnergyUpdateTimeKey = "LastEnergyUpdateTime";
+        
         private readonly IStaticDataService _staticDataService;
         private readonly ClickerModel _clickerModel;
 
@@ -27,8 +29,14 @@ namespace Services.UserProgress
             int maxEnergy = PlayerPrefs.GetInt(ProgressKeys.MaxEnergyKey, config.DefaultMaxEnergy);
             int currentEnergy = PlayerPrefs.GetInt(ProgressKeys.CurrentEnergyKey, maxEnergy);
             int energyRechargePerSecond = PlayerPrefs.GetInt(ProgressKeys.EnergyRechargePerSecondKey, config.DefaultEnergyRechargePerSecond);
-
-            _clickerModel.UpdateValues(clickerPoints, currentEnergy, maxEnergy, energyRechargePerSecond);
+            
+            string rawLastEnergyUpdateTime = PlayerPrefs.GetString(LastEnergyUpdateTimeKey, string.Empty);
+            
+            DateTime lastEnergyUpdateTime = string.IsNullOrEmpty(rawLastEnergyUpdateTime) ? 
+                DateTime.UtcNow : 
+                DateTime.Parse(rawLastEnergyUpdateTime);
+            
+            _clickerModel.UpdateValues(clickerPoints, currentEnergy, maxEnergy, energyRechargePerSecond, lastEnergyUpdateTime);
             
             OnProgressLoadedEvent?.Invoke();
         }
@@ -39,6 +47,7 @@ namespace Services.UserProgress
             PlayerPrefs.SetInt(ProgressKeys.MaxEnergyKey, _clickerModel.MaxEnergy);
             PlayerPrefs.SetInt(ProgressKeys.CurrentEnergyKey, _clickerModel.CurrentEnergy);
             PlayerPrefs.SetInt(ProgressKeys.EnergyRechargePerSecondKey, _clickerModel.EnergyRechargePerSecond);
+            PlayerPrefs.SetString(LastEnergyUpdateTimeKey, DateTime.UtcNow.ToString());
         }
     }
 }

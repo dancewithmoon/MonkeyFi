@@ -14,13 +14,13 @@ namespace Models
         
         public event Action OnStateChangedEvent;
 
-        public void UpdateValues(int points, int currentEnergy, int maxEnergy, int energyRechargePerSecond)
+        public void UpdateValues(int points, int currentEnergy, int maxEnergy, int energyRechargePerSecond, DateTime lastEnergyUpdateTime)
         {
             Points = points;
             CurrentEnergy = currentEnergy;
             MaxEnergy = maxEnergy;
             EnergyRechargePerSecond = energyRechargePerSecond;
-            LastEnergyUpdateTime = DateTime.Now;
+            LastEnergyUpdateTime = lastEnergyUpdateTime;
         }
         
         public void Click()
@@ -30,16 +30,16 @@ namespace Models
             
             Points++;
             CurrentEnergy--;
-            LastEnergyUpdateTime = DateTime.Now;
+            LastEnergyUpdateTime = DateTime.UtcNow;
             OnStateChangedEvent?.Invoke();
         }
 
         public void RechargeEnergy()
         {
-            DateTime now = DateTime.Now;
+            DateTime now = DateTime.UtcNow;
             TimeSpan timePassed = now - LastEnergyUpdateTime;
             int energyRefilled = (int)(EnergyRechargePerSecond * timePassed.TotalSeconds);
-            if(energyRefilled == 0)
+            if(energyRefilled <= 0)
                 return;
             
             CurrentEnergy = Mathf.Clamp(CurrentEnergy + energyRefilled, 0, MaxEnergy);
