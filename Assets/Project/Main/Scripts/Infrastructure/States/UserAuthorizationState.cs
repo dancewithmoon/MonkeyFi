@@ -1,4 +1,7 @@
-﻿using Base.States;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Base.States;
 using Services.Login;
 using Services.Telegram;
 
@@ -8,12 +11,14 @@ namespace Infrastructure.States
     {
         private readonly ITelegramService _telegramService;
         private readonly IAuthorizationService _authorizationService;
+        private readonly List<IPreloadedAfterAuthorization> _toPreload;
         public IGameStateMachine StateMachine { get; set; }
 
-        public UserAuthorizationState(ITelegramService telegramService, IAuthorizationService authorizationService)
+        public UserAuthorizationState(ITelegramService telegramService, IAuthorizationService authorizationService, List<IPreloadedAfterAuthorization> toPreload)
         {
             _telegramService = telegramService;
             _authorizationService = authorizationService;
+            _toPreload = toPreload;
         }
 
         public void Enter()
@@ -32,7 +37,10 @@ namespace Infrastructure.States
         private void OnUserDataLoaded() => 
             _authorizationService.Authorize();
 
-        private void OnAuthorizationSuccess() => 
+        private async void OnAuthorizationSuccess()
+        {
+            await Task.WhenAll(_toPreload.Select(obj => obj.Preload()));
             StateMachine.Enter<LoadProgressState>();
+        }
     }
 }

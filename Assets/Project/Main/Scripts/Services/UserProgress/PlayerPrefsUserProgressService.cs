@@ -1,6 +1,7 @@
 ﻿using System;
 using Infrastructure.StaticData.Services;
 using Models;
+using Services.Time;
 using StaticData;
 using UnityEngine;
 
@@ -11,13 +12,15 @@ namespace Services.UserProgress
         private const string LastEnergyUpdateTimeKey = "LastEnergyUpdateTime";
         
         private readonly IStaticDataService _staticDataService;
+        private readonly ITimeService _timeService;
         private readonly ClickerModel _clickerModel;
 
         public event Action OnProgressLoadedEvent;
 
-        public PlayerPrefsUserProgressService(IStaticDataService staticDataService, ClickerModel clickerModel)
+        public PlayerPrefsUserProgressService(IStaticDataService staticDataService, ITimeService timeService, ClickerModel clickerModel)
         {
             _staticDataService = staticDataService;
+            _timeService = timeService;
             _clickerModel = clickerModel;
         }
 
@@ -33,7 +36,7 @@ namespace Services.UserProgress
             string rawLastEnergyUpdateTime = PlayerPrefs.GetString(LastEnergyUpdateTimeKey, string.Empty);
             
             DateTime lastEnergyUpdateTime = string.IsNullOrEmpty(rawLastEnergyUpdateTime) ? 
-                DateTime.UtcNow : 
+                _timeService.UtcNow : 
                 DateTime.Parse(rawLastEnergyUpdateTime);
             
             _clickerModel.UpdateValues(clickerPoints, currentEnergy, maxEnergy, energyRechargePerSecond, lastEnergyUpdateTime);
@@ -47,7 +50,7 @@ namespace Services.UserProgress
             PlayerPrefs.SetInt(ProgressKeys.MaxEnergyKey, _clickerModel.MaxEnergy);
             PlayerPrefs.SetInt(ProgressKeys.CurrentEnergyKey, _clickerModel.CurrentEnergy);
             PlayerPrefs.SetInt(ProgressKeys.EnergyRechargePerSecondKey, _clickerModel.EnergyRechargePerSecond);
-            PlayerPrefs.SetString(LastEnergyUpdateTimeKey, DateTime.UtcNow.ToString());
+            PlayerPrefs.SetString(LastEnergyUpdateTimeKey, _timeService.UtcNow.ToString());
         }
     }
 }

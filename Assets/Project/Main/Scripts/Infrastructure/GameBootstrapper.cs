@@ -8,6 +8,7 @@ using Models;
 using Services;
 using Services.Login;
 using Services.Telegram;
+using Services.Time;
 using Services.UserProgress;
 using UnityEngine;
 using Zenject;
@@ -22,6 +23,8 @@ namespace Infrastructure
         {
             Application.targetFrameRate = 60;
 
+            Container.BindInterfacesTo<PlayfabTimeService>().AsSingle();
+
             BindModels();
             BindServices();
             BindStates();
@@ -30,7 +33,7 @@ namespace Infrastructure
             
             Container.Bind<Game>().AsSingle();
         }
-
+        
         private void BindModels()
         {
             Container.Bind<ClickerModel>().AsSingle();
