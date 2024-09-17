@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultMaxEnergy: 100
   _defaultEnergyRechargePerSecond: 1
-  _saveFrequencyInSeconds: 10
+  _saveFrequencyInSeconds: 3

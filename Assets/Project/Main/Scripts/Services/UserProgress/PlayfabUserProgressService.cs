@@ -18,6 +18,11 @@ namespace Services.UserProgress
         private GetUserDataResult _rawProgress;
         private DateTime _lastEnergyUpdateTime;
 
+        private int _clickerPoints;
+        private int _maxEnergy;
+        private int _currentEnergy;
+        private int _energyRechargePerSecond;
+
         public event Action OnProgressLoadedEvent;
 
         public PlayfabUserProgressService(IStaticDataService staticDataService, ITimeService timeService, ClickerModel clickerModel)
@@ -35,9 +40,13 @@ namespace Services.UserProgress
 
         public void SaveProgress()
         {
+            Dictionary<string, string> progressData = GetProgressData();
+            if(progressData.Count == 0)
+                return;
+            
             var request = new UpdateUserDataRequest
             {
-                Data = GetProgressData()
+                Data = progressData
             };
             PlayFabClientAPI.UpdateUserData(request, OnProgressSaved, OnPlayfabError);
         }
@@ -49,12 +58,12 @@ namespace Services.UserProgress
             _rawProgress = result;
 
             ConfigStaticData config = _staticDataService.GetConfig();
-            int clickerPoints = GetIntegerValue(ProgressKeys.ClickerPointsKey, 0);
-            int maxEnergy = GetIntegerValue(ProgressKeys.MaxEnergyKey, config.DefaultMaxEnergy);
-            int energyRechargePerSecond = GetIntegerValue(ProgressKeys.EnergyRechargePerSecondKey, config.DefaultEnergyRechargePerSecond);
-            int currentEnergy = GetEnergyValue(maxEnergy);
+            _clickerPoints = GetIntegerValue(ProgressKeys.ClickerPointsKey, 0);
+            _maxEnergy = GetIntegerValue(ProgressKeys.MaxEnergyKey, config.DefaultMaxEnergy);
+            _energyRechargePerSecond = GetIntegerValue(ProgressKeys.EnergyRechargePerSecondKey, config.DefaultEnergyRechargePerSecond);
+            _currentEnergy = GetEnergyValue(_maxEnergy);
             
-            _clickerModel.UpdateValues(clickerPoints, currentEnergy, maxEnergy, energyRechargePerSecond, _lastEnergyUpdateTime);
+            _clickerModel.UpdateValues(_clickerPoints, _currentEnergy, _maxEnergy, _energyRechargePerSecond, _lastEnergyUpdateTime);
             _clickerModel.RechargeEnergy();
             OnProgressLoadedEvent?.Invoke();
         }
@@ -81,13 +90,33 @@ namespace Services.UserProgress
         
         private Dictionary<string,string> GetProgressData()
         {
-            return new Dictionary<string, string>
+            var result = new Dictionary<string, string>();
+            
+            if (_clickerPoints != _clickerModel.Points)
             {
-                { ProgressKeys.ClickerPointsKey, _clickerModel.Points.ToString() },
-                { ProgressKeys.CurrentEnergyKey, _clickerModel.CurrentEnergy.ToString() },
-                { ProgressKeys.MaxEnergyKey, _clickerModel.MaxEnergy.ToString() },
-                { ProgressKeys.EnergyRechargePerSecondKey, _clickerModel.EnergyRechargePerSecond.ToString() }
-            };
+                _clickerPoints = _clickerModel.Points;
+                result[ProgressKeys.ClickerPointsKey] = _clickerPoints.ToString();
+            }
+            
+            if (_currentEnergy != _clickerModel.CurrentEnergy)
+            {
+                _currentEnergy = _clickerModel.CurrentEnergy;
+                result[ProgressKeys.CurrentEnergyKey] = _currentEnergy.ToString();
+            }
+            
+            if (_maxEnergy != _clickerModel.MaxEnergy)
+            {
+                _maxEnergy = _clickerModel.MaxEnergy;
+                result[ProgressKeys.MaxEnergyKey] = _maxEnergy.ToString();
+            }
+            
+            if (_energyRechargePerSecond != _clickerModel.EnergyRechargePerSecond)
+            {
+                _energyRechargePerSecond = _clickerModel.EnergyRechargePerSecond;
+                result[ProgressKeys.EnergyRechargePerSecondKey] = _energyRechargePerSecond.ToString();
+            }
+
+            return result;
         }
 
         private void OnProgressSaved(UpdateUserDataResult result) => 
