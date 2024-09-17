@@ -20,7 +20,7 @@ namespace Services.UserProgress
 
         public event Action OnProgressLoadedEvent;
 
-        public PlayfabUserProgressService(UserDataService userDataService, IStaticDataService staticDataService, ITimeService timeService, ClickerModel clickerModel)
+        public PlayfabUserProgressService(IStaticDataService staticDataService, ITimeService timeService, ClickerModel clickerModel)
         {
             _staticDataService = staticDataService;
             _timeService = timeService;
