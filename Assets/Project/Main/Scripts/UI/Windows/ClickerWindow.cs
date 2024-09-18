@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Models;
+﻿using Models;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +13,6 @@ namespace UI.Windows
         [SerializeField] private TMP_Text _energyText;
 
         private ClickerModel _clickerModel;
-        private Coroutine _updateEnergyCoroutine;
 
         [Inject]
         private void Construct(ClickerModel clickerModel)
@@ -26,14 +24,12 @@ namespace UI.Windows
         {
             _button.onClick.AddListener(OnClick);
             _clickerModel.OnStateChangedEvent += DrawWindow;
-            _updateEnergyCoroutine = StartCoroutine(EnergyRechargeCycle());
         }
 
         protected override void OnWindowHide()
         {
             _button.onClick.RemoveListener(OnClick);
             _clickerModel.OnStateChangedEvent -= DrawWindow;
-            StopCoroutine(_updateEnergyCoroutine);
         }
 
         public override void DrawWindow()
@@ -58,17 +54,5 @@ namespace UI.Windows
 
         private void OnClick() => 
             _clickerModel.Click();
-
-        private IEnumerator EnergyRechargeCycle()
-        {
-            var waitFor1Second = new WaitForSeconds(1f);
-            while (this != null)
-            {
-                if (_clickerModel.NeedEnergyRecharge)
-                    _clickerModel.RechargeEnergy();
-                
-                yield return waitFor1Second;
-            }
-        }
     }
 }
