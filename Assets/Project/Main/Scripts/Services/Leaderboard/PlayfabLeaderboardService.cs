@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Infrastructure.StaticData.Services;
 using Models;
 using PlayFab;
 using PlayFab.ClientModels;
@@ -12,20 +13,23 @@ namespace Services.Leaderboard
         private const string StatisticName = "Leaderboard";
         
         private readonly ClickerModel _clickerModel;
+        private readonly IStaticDataService _staticDataService;
         private readonly Dictionary<string, LeaderboardEntryModel> _leaderboard = new();
 
         public List<LeaderboardEntryModel> Leaderboard => _leaderboard.Values.ToList();
 
-        public PlayfabLeaderboardService(ClickerModel clickerModel)
+        public PlayfabLeaderboardService(ClickerModel clickerModel, IStaticDataService staticDataService)
         {
             _clickerModel = clickerModel;
+            _staticDataService = staticDataService;
         }
 
         public void LoadLeaderboard()
         {
             var request = new GetLeaderboardRequest
             {
-                StatisticName = StatisticName
+                StatisticName = StatisticName,
+                MaxResultsCount = _staticDataService.GetConfig().LeaderboardSize
             };
 
             PlayFabClientAPI.GetLeaderboard(request, OnLeaderboardReceived, OnError);
