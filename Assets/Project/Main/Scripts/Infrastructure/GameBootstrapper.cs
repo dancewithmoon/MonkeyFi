@@ -6,6 +6,7 @@ using Infrastructure.States;
 using Infrastructure.StaticData.Services;
 using Models;
 using Services;
+using Services.Leaderboard;
 using Services.Login;
 using Services.Telegram;
 using Services.Time;
@@ -48,6 +49,7 @@ namespace Infrastructure
             Container.Bind<UserDataService>().AsSingle();
             Container.Bind<IAuthorizationService>().To<PlayfabAuthorizationService>().AsSingle();
             Container.Bind<IUserProgressService>().To<PlayfabUserProgressService>().AsSingle();
+            Container.Bind<ILeaderboardService>().To<PlayfabLeaderboardService>().AsSingle();
         }
 
         private void BindStates()
