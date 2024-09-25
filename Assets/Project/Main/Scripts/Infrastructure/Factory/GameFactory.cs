@@ -3,6 +3,8 @@ using Base.AssetManagement;
 using Base.Instantiating;
 using Infrastructure.StaticData.Services;
 using Services;
+using Services.Leaderboard;
+using UI.Elements;
 using UI.Windows;
 using UnityEngine;
 
@@ -12,6 +14,7 @@ namespace Infrastructure.Factory
     {
         private const string UIRootPath = "UI/UIRoot";
         private const string HudOverlayPath = "UI/HUDOverlay";
+        private const string LeaderboardItemPath = "UI/Elements/LeaderboardItem";
 
         private readonly IStaticDataService _staticDataService;
         private Transform _uiRoot;
@@ -43,6 +46,14 @@ namespace Infrastructure.Factory
         public async void CreateHudOverlay()
         {
             await InstantiateRegistered(HudOverlayPath, _uiRoot);
+        }
+
+        public async Task<LeaderboardItem> CreateLeaderboardItem(LeaderboardEntryModel model, Transform parent)
+        {
+            GameObject leaderboardObject = await InstantiateRegistered(LeaderboardItemPath, parent);
+            var leaderboardItem = leaderboardObject.GetComponent<LeaderboardItem>();
+            leaderboardItem.Initialize(model);
+            return leaderboardItem;
         }
     }
 }

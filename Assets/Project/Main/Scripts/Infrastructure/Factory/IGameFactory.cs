@@ -1,5 +1,9 @@
-﻿using Services;
+﻿using System.Threading.Tasks;
+using Services;
+using Services.Leaderboard;
+using UI.Elements;
 using UI.Windows;
+using UnityEngine;
 
 namespace Infrastructure.Factory
 {
@@ -8,5 +12,6 @@ namespace Infrastructure.Factory
         void CreateUIRoot();
         public BaseWindow CreateWindow(WindowType windowType);
         void CreateHudOverlay();
+        Task<LeaderboardItem> CreateLeaderboardItem(LeaderboardEntryModel model, Transform parent);
     }
 }
