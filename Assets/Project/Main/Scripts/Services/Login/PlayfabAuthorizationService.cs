@@ -21,12 +21,36 @@ namespace Services.Login
             var request = new LoginWithCustomIDRequest
             {
                 CustomId = _userDataService.Id.ToString(),
-                CreateAccount = true
+                CreateAccount = true,
+                InfoRequestParameters = new GetPlayerCombinedInfoRequestParams
+                {
+                    GetPlayerProfile = true
+                }
             };
             PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnPlayfabError);
         }
 
-        private void OnLoginSuccess(LoginResult result) => 
+        private void OnLoginSuccess(LoginResult result)
+        {
+            if (IsUsernameChanged(result))
+                UpdateUsername();
+            else
+                OnAuthorizationSuccessEvent?.Invoke();
+        }
+
+        private bool IsUsernameChanged(LoginResult result) => 
+            result.InfoResultPayload.PlayerProfile.DisplayName != _userDataService.Username;
+        
+        private void UpdateUsername()
+        {
+            var request = new UpdateUserTitleDisplayNameRequest
+            {
+                DisplayName = _userDataService.Username
+            };
+            PlayFabClientAPI.UpdateUserTitleDisplayName(request, OnUsernameUpdate, OnPlayfabError);
+        }
+
+        private void OnUsernameUpdate(UpdateUserTitleDisplayNameResult result) => 
             OnAuthorizationSuccessEvent?.Invoke();
 
         private void OnPlayfabError(PlayFabError error) => 
