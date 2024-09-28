@@ -40,7 +40,9 @@ namespace Infrastructure.Factory
         public BaseWindow CreateWindow(WindowType windowType)
         {
             BaseWindow prefab = _staticDataService.GetWindowPrefab(windowType);
-            return InstantiateRegistered(prefab, _uiRoot);
+            BaseWindow window = InstantiateRegistered(prefab, _uiRoot);
+            window.OnWindowCreated();
+            return window;
         }
 
         public async void CreateHudOverlay()
