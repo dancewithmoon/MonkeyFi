@@ -54,7 +54,7 @@ namespace Infrastructure.States
             await _preload;
             _gameFactory.CreateUIRoot();
             _gameFactory.CreateHudOverlay();
-            _windowService.ShowWindow(WindowType.Clicker);
+            _windowService.ShowWindow(WindowType.Games);
             StateMachine.Enter<GameLoopState>();
         }
     }

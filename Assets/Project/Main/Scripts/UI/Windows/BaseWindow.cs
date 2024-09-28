@@ -10,6 +10,8 @@ namespace UI.Windows
         private void Awake() => 
             _canvas = GetComponent<Canvas>();
 
+        public virtual void OnWindowCreated() { }
+
         public bool Visible
         {
             get => _canvas.enabled;
