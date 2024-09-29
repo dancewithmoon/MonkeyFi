@@ -8,10 +8,10 @@ using Services;
 
 namespace Infrastructure.States
 {
-    public class LoadLevelState : IPayloadedState<string>
+    public class LoadMenuState : IPayloadedState<string>
     {
         private readonly SceneLoader _sceneLoader;
-        private readonly List<IPreloadedInLoadLevel> _toPreload;
+        private readonly List<IPreloadedInLoadMenu> _toPreload;
         private readonly List<ICleanUp> _toCleanUp;
         private readonly IGameFactory _gameFactory;
         private readonly IWindowService _windowService;
@@ -21,7 +21,7 @@ namespace Infrastructure.States
         
         public IGameStateMachine StateMachine { get; set; }
 
-        public LoadLevelState(SceneLoader sceneLoader, List<IPreloadedInLoadLevel> toPreload, List<ICleanUp> toCleanUp,
+        public LoadMenuState(SceneLoader sceneLoader, List<IPreloadedInLoadMenu> toPreload, List<ICleanUp> toCleanUp,
             IGameFactory gameFactory, IWindowService windowService)
         {
             _sceneLoader = sceneLoader;

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Base.Instantiating
 {
-    public abstract class BaseFactory : IPreloadedInLoadLevel, ICleanUp
+    public abstract class BaseFactory : IPreloadedInLoadMenu, ICleanUp
     {
         protected readonly IAssets assets;
         private readonly IInstantiateService _instantiateService;

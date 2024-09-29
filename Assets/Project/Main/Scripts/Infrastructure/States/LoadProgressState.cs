@@ -33,7 +33,7 @@ namespace Infrastructure.States
 
         private void OnProgressLoaded()
         {
-            StateMachine.Enter<LoadLevelState, string>(MainScene);
+            StateMachine.Enter<LoadMenuState, string>(MainScene);
         }
     }
 }

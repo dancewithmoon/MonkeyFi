@@ -57,7 +57,7 @@ namespace Infrastructure
             Container.Bind<IExitableState>().To<BootstrapState>().AsSingle();
             Container.Bind<IExitableState>().To<UserAuthorizationState>().AsSingle();
             Container.Bind<IExitableState>().To<LoadProgressState>().AsSingle();
-            Container.Bind<IExitableState>().To<LoadLevelState>().AsSingle();
+            Container.Bind<IExitableState>().To<LoadMenuState>().AsSingle();
             Container.Bind<IExitableState>().To<GameLoopState>().AsSingle();
         }
 

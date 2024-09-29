@@ -2,7 +2,7 @@
 
 namespace Base.States
 {
-    public interface IPreloadedInLoadLevel
+    public interface IPreloadedInLoadMenu
     {
         Task Preload();
     }
