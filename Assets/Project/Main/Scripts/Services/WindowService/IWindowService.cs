@@ -1,4 +1,6 @@
-﻿namespace Services
+﻿using UI.Windows;
+
+namespace Services
 {
     public interface IWindowService
     {

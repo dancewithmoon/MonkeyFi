@@ -5,6 +5,7 @@ using Infrastructure.Factory;
 using Infrastructure.States;
 using Infrastructure.StaticData.Services;
 using Models;
+using MonkeyBusiness.Infrastructure.Factory;
 using Services;
 using Services.Leaderboard;
 using Services.Login;
@@ -42,6 +43,7 @@ namespace Infrastructure
         
         private void BindServices()
         {
+            Container.Bind<IMonkeyBusinessFactory>().To<MonkeyBusinessFactory>().AsSingle();
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<StaticDataService>().AsSingle();
             Container.BindInterfacesTo<WindowService>().AsSingle();
@@ -59,6 +61,8 @@ namespace Infrastructure
             Container.Bind<IExitableState>().To<LoadProgressState>().AsSingle();
             Container.Bind<IExitableState>().To<LoadMenuState>().AsSingle();
             Container.Bind<IExitableState>().To<GameLoopState>().AsSingle();
+            Container.Bind<IExitableState>().To<LoadMonkeyBusinessState>().AsSingle();
+            Container.Bind<IExitableState>().To<MonkeyBusinessState>().AsSingle();
         }
 
         public override void Start()

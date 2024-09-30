@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using AYellowpaper.SerializedCollections;
+﻿using Base.States;
+using Infrastructure.States;
 using Services;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using Zenject;
 
@@ -10,36 +9,35 @@ namespace UI.Windows
 {
     public class GamesWindow : BaseWindow
     {
-        [SerializeField] private SerializedDictionary<Button, WindowType> _buttons;
+        [SerializeField] private Button _clickerButton;
+        [SerializeField] private Button _gameButton;
         
-        private readonly Dictionary<Button, UnityAction> _buttonActions = new();
         private IWindowService _windowService;
+        private IGameStateMachine _stateMachine;
 
         [Inject]
-        private void Construct(IWindowService windowService)
+        private void Construct(IWindowService windowService, IGameStateMachine stateMachine)
         {
             _windowService = windowService;
-        }
-
-        public override void OnWindowCreated()
-        {
-            foreach ((Button button, WindowType windowType) in _buttons)
-                _buttonActions[button] = () => ShowWindow(windowType);
+            _stateMachine = stateMachine;
         }
 
         protected override void OnWindowShow()
         {
-            foreach ((Button button, UnityAction action) in _buttonActions)
-                button.onClick.AddListener(action);
+            _clickerButton.onClick.AddListener(ShowClicker);
+            _gameButton.onClick.AddListener(ShowGame);
         }
 
         protected override void OnWindowHide()
         {
-            foreach ((Button button, UnityAction action) in _buttonActions)
-                button.onClick.RemoveListener(action);
+            _clickerButton.onClick.RemoveListener(ShowClicker);
+            _gameButton.onClick.RemoveListener(ShowGame);
         }
+        
+        private void ShowClicker() => 
+            _windowService.ShowWindow(WindowType.Clicker);
 
-        private void ShowWindow(WindowType windowType) => 
-            _windowService.ShowWindow(windowType);
+        private void ShowGame() =>
+            _stateMachine.Enter<LoadMonkeyBusinessState>();
     }
 }

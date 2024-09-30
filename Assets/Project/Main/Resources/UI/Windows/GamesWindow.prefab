@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 9182104174328945787}
   - component: {fileID: 5743239522293511012}
   m_Layer: 5
-  m_Name: '[Button] Mining'
+  m_Name: '[Button] Clicker'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -618,10 +618,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 509aff04008e431a8e0c98f801238cbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _buttons:
-    _serializedList:
-    - Key: {fileID: 5743239522293511012}
-      Value: 1
+  _clickerButton: {fileID: 5743239522293511012}
+  _gameButton: {fileID: 6347714664237897324}
 --- !u!1 &8263049195877575398
 GameObject:
   m_ObjectHideFlags: 0
@@ -756,7 +754,7 @@ GameObject:
   - component: {fileID: 469356187554104253}
   - component: {fileID: 6347714664237897324}
   m_Layer: 5
-  m_Name: '[Button] Monkey Business'
+  m_Name: '[Button] Game'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
