@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Project/Main/Scenes/Main.unity
     guid: b7202ef80ffb5a047ab5408468eb91a1
+  - enabled: 1
+    path: Assets/Project/Main/Scenes/MonkeyBusiness.unity
+    guid: 381c7d0ecc4a3d34b9a93db82100c0e6
   m_configObjects: {}

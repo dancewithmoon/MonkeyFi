@@ -6,8 +6,6 @@ namespace Infrastructure.States
 {
     public class LoadProgressState : IState
     {
-        private const string MainScene = "Main";
-        
         private readonly IUserProgressService _progressService;
         private readonly ILeaderboardService _leaderboardService;
 
@@ -33,7 +31,7 @@ namespace Infrastructure.States
 
         private void OnProgressLoaded()
         {
-            StateMachine.Enter<LoadLevelState, string>(MainScene);
+            StateMachine.Enter<LoadMenuState, string>(Scenes.MainScene);
         }
     }
 }
