@@ -9,7 +9,7 @@ using UI.Windows;
 
 namespace Infrastructure.States
 {
-    public class LoadMenuState : IPayloadedState<string>
+    public class LoadMenuState : IState
     {
         private readonly SceneLoader _sceneLoader;
         private readonly List<IPreloadedInLoadMenu> _toPreload;
@@ -18,8 +18,7 @@ namespace Infrastructure.States
         private readonly IWindowService _windowService;
 
         private Task _preload;
-        private string _currentLevel;
-        
+
         public IGameStateMachine StateMachine { get; set; }
 
         public LoadMenuState(SceneLoader sceneLoader, List<IPreloadedInLoadMenu> toPreload, List<ICleanUp> toCleanUp,
@@ -32,13 +31,12 @@ namespace Infrastructure.States
             _windowService = windowService;
         }
 
-        public void Enter(string sceneName)
+        public void Enter()
         {
-            _currentLevel = sceneName;
             _toCleanUp.ForEach(obj => obj.CleanUp());
             _preload = Preload();
 
-            _sceneLoader.Load(_currentLevel, OnLoaded);
+            _sceneLoader.Load(Scenes.MainScene, OnLoaded);
         }
 
         public void Exit()
@@ -54,9 +52,16 @@ namespace Infrastructure.States
         {
             await _preload;
             _gameFactory.CreateUIRoot();
-            _gameFactory.CreateHudOverlay();
+            ShowHudOverlay();
             _windowService.ShowWindow(WindowType.Games);
-            StateMachine.Enter<GameLoopState>();
+            StateMachine.Enter<MenuState>();
+        }
+
+        private void ShowHudOverlay()
+        {
+            _windowService.ShowHudOverlay();
+            _windowService.Hud.SetBottomPanelActive(true);
+            _windowService.Hud.SetBackButtonActive(false);
         }
     }
 }

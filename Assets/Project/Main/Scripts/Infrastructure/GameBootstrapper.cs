@@ -60,7 +60,7 @@ namespace Infrastructure
             Container.Bind<IExitableState>().To<UserAuthorizationState>().AsSingle();
             Container.Bind<IExitableState>().To<LoadProgressState>().AsSingle();
             Container.Bind<IExitableState>().To<LoadMenuState>().AsSingle();
-            Container.Bind<IExitableState>().To<GameLoopState>().AsSingle();
+            Container.Bind<IExitableState>().To<MenuState>().AsSingle();
             Container.Bind<IExitableState>().To<LoadMonkeyBusinessState>().AsSingle();
             Container.Bind<IExitableState>().To<MonkeyBusinessState>().AsSingle();
         }

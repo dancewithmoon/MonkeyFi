@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Infrastructure.Factory;
+using UI;
 using UI.Windows;
+using Object = UnityEngine.Object;
 
 namespace Services
 {
@@ -10,10 +12,20 @@ namespace Services
         private readonly Dictionary<WindowType, BaseWindow> _windows = new();
 
         private WindowType _currentWindow = WindowType.None;
-        
+
+        public HudOverlay Hud { get; private set; }
+
         public WindowService(IGameFactory gameFactory)
         {
             _gameFactory = gameFactory;
+        }
+
+        public async void ShowHudOverlay()
+        {
+            if (Hud == null)
+                Hud = await _gameFactory.CreateHudOverlay();
+
+            Hud.Visible = true;
         }
 
         public void ShowWindow(WindowType windowType, bool callDraw = true)
@@ -53,6 +65,15 @@ namespace Services
                 return;
             
             _windows[windowType].Visible = false;
+        }
+
+        public void ClearWindows()
+        {
+            foreach ((WindowType windowType, BaseWindow window) in _windows)
+                Object.Destroy(window.gameObject);
+
+            _windows.Clear();
+            _currentWindow = WindowType.None;
         }
     }
 }

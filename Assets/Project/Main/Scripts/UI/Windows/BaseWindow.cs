@@ -7,10 +7,8 @@ namespace UI.Windows
     {
         private Canvas _canvas;
 
-        private void Awake() => 
+        public virtual void OnWindowCreated() => 
             _canvas = GetComponent<Canvas>();
-
-        public virtual void OnWindowCreated() { }
 
         public bool Visible
         {
