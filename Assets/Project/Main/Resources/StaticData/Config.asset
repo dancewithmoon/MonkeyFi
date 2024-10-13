@@ -15,4 +15,5 @@ MonoBehaviour:
   _defaultMaxEnergy: 100
   _defaultEnergyRechargePerSecond: 1
   _saveFrequencyInSeconds: 3
+  _statisticsUpdateFrequencyInSeconds: 5
   _leaderboardSize: 10

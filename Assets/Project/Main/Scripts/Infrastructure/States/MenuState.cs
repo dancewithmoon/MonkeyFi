@@ -79,7 +79,7 @@ namespace Infrastructure.States
 
         private IEnumerator StatisticsUpdateCoroutine()
         {
-            WaitForSeconds waitForSave = new WaitForSeconds(5f); //TODO: Extract to config
+            WaitForSeconds waitForSave = new WaitForSeconds(_config.StatisticsUpdateFrequencyInSeconds);
             while (_coroutineRunner != null)
             {
                 yield return waitForSave;
