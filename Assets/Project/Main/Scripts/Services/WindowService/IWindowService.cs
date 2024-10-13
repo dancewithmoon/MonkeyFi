@@ -7,9 +7,10 @@ namespace Services
     {
         HudOverlay Hud { get; }
         void ShowHudOverlay();
-        void ShowWindow(WindowType windowType, bool callDraw = true);
+        void ShowWindow(WindowType windowType);
         void ShowWindow<TPayload>(WindowType windowType, TPayload payload);
         void HideWindow(WindowType windowType);
         void ClearWindows();
+        void ClearHistory();
     }
 }

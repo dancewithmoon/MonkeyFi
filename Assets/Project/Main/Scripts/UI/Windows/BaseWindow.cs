@@ -15,6 +15,9 @@ namespace UI.Windows
             get => _canvas.enabled;
             set
             {
+                if(_canvas.enabled == value)
+                    return;
+                
                 _canvas.enabled = value;
                 if(value)
                     OnWindowShow();
