@@ -2,8 +2,8 @@
 using Base.AssetManagement;
 using Base.Instantiating;
 using Infrastructure.StaticData.Services;
-using Services;
 using Services.Leaderboard;
+using UI;
 using UI.Elements;
 using UI.Windows;
 using UnityEngine;
@@ -35,6 +35,7 @@ namespace Infrastructure.Factory
         {
             GameObject uiRootObj = await InstantiateRegistered(UIRootPath);
             _uiRoot = uiRootObj.transform;
+            Object.DontDestroyOnLoad(_uiRoot);
         }
 
         public BaseWindow CreateWindow(WindowType windowType)
@@ -45,9 +46,12 @@ namespace Infrastructure.Factory
             return window;
         }
 
-        public async void CreateHudOverlay()
+        public async Task<HudOverlay> CreateHudOverlay()
         {
-            await InstantiateRegistered(HudOverlayPath, _uiRoot);
+            GameObject hudObject = await InstantiateRegistered(HudOverlayPath, _uiRoot);
+            var hud = hudObject.GetComponent<HudOverlay>();
+            hud.OnWindowCreated();
+            return hud;
         }
 
         public async Task<LeaderboardItem> CreateLeaderboardItem(LeaderboardEntryModel model, Transform parent)

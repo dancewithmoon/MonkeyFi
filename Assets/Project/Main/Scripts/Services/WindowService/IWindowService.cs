@@ -1,11 +1,16 @@
-﻿using UI.Windows;
+﻿using UI;
+using UI.Windows;
 
 namespace Services
 {
     public interface IWindowService
     {
-        void ShowWindow(WindowType windowType, bool callDraw = true);
+        HudOverlay Hud { get; }
+        void ShowHudOverlay();
+        void ShowWindow(WindowType windowType);
         void ShowWindow<TPayload>(WindowType windowType, TPayload payload);
         void HideWindow(WindowType windowType);
+        void ClearWindows();
+        void ClearHistory();
     }
 }
