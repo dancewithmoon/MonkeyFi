@@ -7,6 +7,7 @@ namespace Plugins.Telegram
     public class TelegramBridge : MonoBehaviour
     {
         public event Action<TelegramUserDto> OnUserDataReceiveEvent;
+        public event Action<string> OnStartParamReceived;
         
         public void ReceiveUserData(string data)
         {
@@ -14,8 +15,16 @@ namespace Plugins.Telegram
             OnUserDataReceiveEvent?.Invoke(user);
         }
         
+        public void ReceiveStartParam(string startParam)
+        {
+            OnStartParamReceived?.Invoke(startParam);
+        }
+        
         [DllImport("__Internal")]
         public static extern void RequestUserData();
+        
+        [DllImport("__Internal")]
+        public static extern void RequestStartParam();
 
         [DllImport("__Internal")]
         public static extern void ShowMainButton(string text);

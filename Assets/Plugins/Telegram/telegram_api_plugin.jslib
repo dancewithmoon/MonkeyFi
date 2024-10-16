@@ -1,10 +1,15 @@
 mergeInto(LibraryManager.library, {
   RequestUserData: function () {   
-    if (window.unityInstance) {      
+    if (window.unityInstance) {     
       window.unityInstance.SendMessage("TelegramBridge", "ReceiveUserData", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
     }
   },
 
+  RequestStartParam: function () {    
+    if (window.unityInstance) {  
+      window.unityInstance.SendMessage("TelegramBridge", "ReceiveStartParam", window.Telegram.WebApp.initDataUnsafe.start_param);
+    }
+  },
 
   ShowMainButton: function (text) {
     if (window && window.Telegram && window.Telegram.WebApp) {

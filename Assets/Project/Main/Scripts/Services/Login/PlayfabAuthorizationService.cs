@@ -9,6 +9,8 @@ namespace Services.Login
     {
         private readonly UserDataService _userDataService;
 
+        public bool NewlyCreatedAccount { get; private set; }
+
         public event Action OnAuthorizationSuccessEvent;
 
         public PlayfabAuthorizationService(UserDataService userDataService)
@@ -32,12 +34,14 @@ namespace Services.Login
 
         private void OnLoginSuccess(LoginResult result)
         {
+            NewlyCreatedAccount = result.NewlyCreated;
+            
             if (IsUsernameChanged(result))
                 UpdateUsername();
             else
                 OnAuthorizationSuccessEvent?.Invoke();
         }
-
+        
         private bool IsUsernameChanged(LoginResult result) => 
             result.InfoResultPayload.PlayerProfile.DisplayName != _userDataService.Username;
         
