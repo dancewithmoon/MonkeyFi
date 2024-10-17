@@ -14,7 +14,8 @@ namespace Infrastructure.States
         private readonly List<IPreloadedAfterAuthorization> _toPreload;
         public IGameStateMachine StateMachine { get; set; }
 
-        public UserAuthorizationState(ITelegramService telegramService, IAuthorizationService authorizationService, List<IPreloadedAfterAuthorization> toPreload)
+        public UserAuthorizationState(ITelegramService telegramService, IAuthorizationService authorizationService,
+            List<IPreloadedAfterAuthorization> toPreload)
         {
             _telegramService = telegramService;
             _authorizationService = authorizationService;
@@ -24,23 +25,23 @@ namespace Infrastructure.States
         public void Enter()
         {
             _telegramService.OnUserDataLoadedEvent += OnUserDataLoaded;
-            _authorizationService.OnAuthorizationSuccessEvent += OnAuthorizationSuccess;
             _telegramService.Initialize();
         }
 
         public void Exit()
         {
             _telegramService.OnUserDataLoadedEvent -= OnUserDataLoaded;
-            _authorizationService.OnAuthorizationSuccessEvent -= OnAuthorizationSuccess;
         }
 
-        private void OnUserDataLoaded() => 
-            _authorizationService.Authorize();
-
-        private async void OnAuthorizationSuccess()
+        private async void OnUserDataLoaded()
         {
-            await Task.WhenAll(_toPreload.Select(obj => obj.Preload()));
+            await _authorizationService.Authorize();
+            await PreloadServices();
+            
             StateMachine.Enter<LoadProgressState>();
         }
+
+        private Task PreloadServices() => 
+            Task.WhenAll(_toPreload.Select(obj => obj.Preload()));
     }
 }
