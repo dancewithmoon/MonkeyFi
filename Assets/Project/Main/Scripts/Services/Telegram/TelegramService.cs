@@ -10,8 +10,10 @@ namespace Services.Telegram
         public void Initialize()
         {
             ReferralCode = TelegramBridge.GetTelegramStartParam();
-            TelegramUserDto telegramUserData = TelegramBridge.GetTelegramUserData();
-            TelegramUser = new TelegramUserData(telegramUserData.id, telegramUserData.username);
+            TelegramUser = CreateUserData(TelegramBridge.GetTelegramUserData());
         }
+
+        private static TelegramUserData CreateUserData(TelegramUserDto telegramUser) =>
+            new(telegramUser.id, telegramUser.username);
     }
 }

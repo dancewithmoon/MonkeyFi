@@ -9,6 +9,7 @@ using MonkeyBusiness.Infrastructure.Factory;
 using Services;
 using Services.Leaderboard;
 using Services.Login;
+using Services.Referral;
 using Services.Telegram;
 using Services.Time;
 using Services.UserProgress;
@@ -47,6 +48,7 @@ namespace Infrastructure
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<StaticDataService>().AsSingle();
             Container.BindInterfacesTo<WindowService>().AsSingle();
+            Container.Bind<IReferralService>().To<PlayfabReferralService>().AsSingle();
             Container.Bind<ITelegramService>().To(GetTelegramServiceImplementation()).AsSingle();
             Container.Bind<UserDataService>().AsSingle();
             Container.Bind<IAuthorizationService>().To<PlayfabAuthorizationService>().AsSingle();

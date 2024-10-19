@@ -1,7 +1,9 @@
 mergeInto(LibraryManager.library, {
   GetUserData: function () {
     var userData = JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user);
-    console.log(userData);
+    if(!userData) {
+        userData = "";
+    }
     var bufferSize = lengthBytesUTF8(userData) + 1;
     var buffer = _malloc(bufferSize);
     stringToUTF8(userData, buffer, bufferSize);
@@ -10,7 +12,9 @@ mergeInto(LibraryManager.library, {
 
   GetStartParam: function () {  
     var startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
-    console.log(startParam);
+    if(!startParam) {
+        startParam = "";
+    }
     var bufferSize = lengthBytesUTF8(startParam) + 1;
     var buffer = _malloc(bufferSize);
     stringToUTF8(startParam, buffer, bufferSize);
