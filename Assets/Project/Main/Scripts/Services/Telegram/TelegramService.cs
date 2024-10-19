@@ -1,7 +1,4 @@
-﻿using System;
-using Plugins.Telegram;
-using UnityEngine;
-using Object = UnityEngine.Object;
+﻿using Plugins.Telegram;
 
 namespace Services.Telegram
 {
@@ -10,32 +7,11 @@ namespace Services.Telegram
         public string ReferralCode { get; private set; }
         public TelegramUserData TelegramUser { get; private set; }
         
-        public event Action OnUserDataLoadedEvent;
-
         public void Initialize()
         {
-            InitializeBridge();
-            TelegramBridge.RequestStartParam();
-            TelegramBridge.RequestUserData();
-        }
-
-        private void InitializeBridge()
-        {
-            var bridge = new GameObject("TelegramBridge").AddComponent<TelegramBridge>();
-            Object.DontDestroyOnLoad(bridge);
-            bridge.OnStartParamReceived += OnStartParamReceived;
-            bridge.OnUserDataReceiveEvent += OnUserDataReceive;
-        }
-
-        private void OnStartParamReceived(string startParam)
-        {
-            ReferralCode = startParam;
-        }
-
-        private void OnUserDataReceive(TelegramUserDto user)
-        {
-            TelegramUser = new TelegramUserData(user.id, user.username);
-            OnUserDataLoadedEvent?.Invoke();
+            ReferralCode = TelegramBridge.GetTelegramStartParam();
+            TelegramUserDto telegramUserData = TelegramBridge.GetTelegramUserData();
+            TelegramUser = new TelegramUserData(telegramUserData.id, telegramUserData.username);
         }
     }
 }

@@ -22,25 +22,19 @@ namespace Infrastructure.States
             _toPreload = toPreload;
         }
 
-        public void Enter()
+        public async void Enter()
         {
-            _telegramService.OnUserDataLoadedEvent += OnUserDataLoaded;
             _telegramService.Initialize();
-        }
-
-        public void Exit()
-        {
-            _telegramService.OnUserDataLoadedEvent -= OnUserDataLoaded;
-        }
-
-        private async void OnUserDataLoaded()
-        {
             await _authorizationService.Authorize();
             await PreloadServices();
             
             StateMachine.Enter<LoadProgressState>();
         }
 
+        public void Exit()
+        {
+        }
+        
         private Task PreloadServices() => 
             Task.WhenAll(_toPreload.Select(obj => obj.Preload()));
     }
