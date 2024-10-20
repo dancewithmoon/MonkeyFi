@@ -2,9 +2,9 @@
 using System.Linq;
 using Infrastructure.StaticData.Services;
 using Models;
-using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
+using Utils;
 
 namespace Services.Leaderboard
 {
@@ -24,7 +24,7 @@ namespace Services.Leaderboard
             _staticDataService = staticDataService;
         }
 
-        public void LoadLeaderboard()
+        public async void LoadLeaderboard()
         {
             var request = new GetLeaderboardRequest
             {
@@ -32,10 +32,12 @@ namespace Services.Leaderboard
                 MaxResultsCount = _staticDataService.GetConfig().LeaderboardSize
             };
 
-            PlayFabClientAPI.GetLeaderboard(request, OnLeaderboardReceived, OnError);
+            GetLeaderboardResult result = await PlayFabClientAsyncAPI.GetLeaderboard(request);
+            foreach (PlayerLeaderboardEntry entry in result.Leaderboard)
+                _leaderboard[entry.PlayFabId] = new LeaderboardEntryModel(entry.DisplayName, entry.StatValue);
         }
 
-        public void UpdatePlayerStatistics()
+        public async void UpdatePlayerStatistics()
         {
             var request = new UpdatePlayerStatisticsRequest
             {
@@ -48,19 +50,8 @@ namespace Services.Leaderboard
                     }
                 }
             };
-            PlayFabClientAPI.UpdatePlayerStatistics(request, OnRequestSent, OnError);
-        }
-
-        private void OnLeaderboardReceived(GetLeaderboardResult result)
-        {
-            foreach (PlayerLeaderboardEntry entry in result.Leaderboard)
-                _leaderboard[entry.PlayFabId] = new LeaderboardEntryModel(entry.DisplayName, entry.StatValue);
-        }
-
-        private void OnRequestSent(UpdatePlayerStatisticsResult result) => 
+            UpdatePlayerStatisticsResult result = await PlayFabClientAsyncAPI.UpdatePlayerStatistics(request);
             Debug.Log("Player statistics sent: " + result.ToJson());
-        
-        private void OnError(PlayFabError error) => 
-            Debug.LogError("Playfab error: " + error);
+        }
     }
 }
