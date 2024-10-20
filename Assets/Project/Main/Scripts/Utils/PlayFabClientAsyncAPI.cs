@@ -1,125 +1,61 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using PlayFab;
 using PlayFab.ClientModels;
+using PlayFab.SharedModels;
 
 namespace Utils
 {
     public static class PlayFabClientAsyncAPI
     {
-        public static async Task<LoginResult> LoginWithCustomID(LoginWithCustomIDRequest request)
+        public static async Task<LoginResult> LoginWithCustomID(LoginWithCustomIDRequest request) => 
+            await PlayFabApiCall<LoginWithCustomIDRequest, LoginResult>(request, PlayFabClientAPI.LoginWithCustomID);
+
+        public static async Task<GetAccountInfoResult> GetAccountInfo(GetAccountInfoRequest request) => 
+            await PlayFabApiCall<GetAccountInfoRequest, GetAccountInfoResult>(request, PlayFabClientAPI.GetAccountInfo);
+
+        public static async Task<GetUserDataResult> GetUserData(GetUserDataRequest request) => 
+            await PlayFabApiCall<GetUserDataRequest, GetUserDataResult>(request, PlayFabClientAPI.GetUserData);
+
+        public static async Task<UpdateUserDataResult> UpdateUserData(UpdateUserDataRequest request) => 
+            await PlayFabApiCall<UpdateUserDataRequest, UpdateUserDataResult>(request, PlayFabClientAPI.UpdateUserData);
+
+        public static async Task<GetLeaderboardResult> GetLeaderboard(GetLeaderboardRequest request) => 
+            await PlayFabApiCall<GetLeaderboardRequest, GetLeaderboardResult>(request, PlayFabClientAPI.GetLeaderboard);
+        
+        public static async Task<UpdatePlayerStatisticsResult> UpdatePlayerStatistics(UpdatePlayerStatisticsRequest request) => 
+            await PlayFabApiCall<UpdatePlayerStatisticsRequest, UpdatePlayerStatisticsResult>(request, PlayFabClientAPI.UpdatePlayerStatistics);
+
+        public static async Task<UpdateUserTitleDisplayNameResult> UpdateUserTitleDisplayName(UpdateUserTitleDisplayNameRequest request) =>
+            await PlayFabApiCall<UpdateUserTitleDisplayNameRequest, UpdateUserTitleDisplayNameResult>(request, PlayFabClientAPI.UpdateUserTitleDisplayName);
+
+        public static async Task<AddUsernamePasswordResult> AddUsernamePassword(AddUsernamePasswordRequest request) =>
+            await PlayFabApiCall<AddUsernamePasswordRequest, AddUsernamePasswordResult>(request, PlayFabClientAPI.AddUsernamePassword);
+
+        public static async Task<ExecuteCloudScriptResult> ExecuteCloudScript(ExecuteCloudScriptRequest request) => 
+            await PlayFabApiCall<ExecuteCloudScriptRequest, ExecuteCloudScriptResult>(request, PlayFabClientAPI.ExecuteCloudScript);
+
+        private static async Task<TResult> PlayFabApiCall<TRequest, TResult>(TRequest request, PlayFabAction<TRequest, TResult> apiCall) 
+            where TResult : PlayFabResultCommon
         {
-            LoginResult loginResult = null;
+            TResult result = null;
             PlayFabError error = null;
 
-            PlayFabClientAPI.LoginWithCustomID(request, 
-                result => loginResult = result, 
-                err => error = err);
-            
-            await UniTask.WaitUntil(() => loginResult != null || error != null);
+            apiCall.Invoke(request, res => result = res, err => error = err);
+            await UniTask.WaitUntil(() => result != null || error != null);
             if (error != null)
                 throw new Exception(error.ErrorMessage);
 
-            return loginResult;
-        }
-
-        public static async Task<GetAccountInfoResult> GetAccountInfo(GetAccountInfoRequest request)
-        {
-            GetAccountInfoResult getAccountInfoResult = null;
-            PlayFabError error = null;
-
-            PlayFabClientAPI.GetAccountInfo(request,
-                result => getAccountInfoResult = result,
-                err => error = err);
-            
-            await UniTask.WaitUntil(() => getAccountInfoResult != null || error != null);
-            if (error != null)
-                throw new Exception(error.ErrorMessage);
-
-            return getAccountInfoResult;
-        }
-
-        public static async Task<GetUserDataResult> GetUserData(GetUserDataRequest request)
-        {
-            GetUserDataResult getUserDataResult = null;
-            PlayFabError error = null;
-            
-            PlayFabClientAPI.GetUserData(request, 
-                result => getUserDataResult = result, 
-                err => error = err);
-            
-            await UniTask.WaitUntil(() => getUserDataResult != null || error != null);
-            if (error != null)
-                throw new Exception(error.ErrorMessage);
-
-            return getUserDataResult;
+            return result;
         }
         
-        public static async Task<UpdateUserDataResult> UpdateUserData(UpdateUserDataRequest request)
-        {
-            UpdateUserDataResult updateUserDataResult = null;
-            PlayFabError error = null;
-            
-            PlayFabClientAPI.UpdateUserData(request, 
-                result => updateUserDataResult = result, 
-                err => error = err);
-            
-            await UniTask.WaitUntil(() => updateUserDataResult != null || error != null);
-            if (error != null)
-                throw new Exception(error.ErrorMessage);
-
-            return updateUserDataResult;
-        }
-
-        public static async Task<UpdateUserTitleDisplayNameResult> UpdateUserTitleDisplayName(
-            UpdateUserTitleDisplayNameRequest request)
-        {
-            UpdateUserTitleDisplayNameResult updateUserTitleDisplayNameResult = null;
-            PlayFabError error = null;
-
-            PlayFabClientAPI.UpdateUserTitleDisplayName(request,
-                result => updateUserTitleDisplayNameResult = result,
-                err => error = err);
-            
-            await UniTask.WaitUntil(() => updateUserTitleDisplayNameResult != null || error != null);
-            if (error != null)
-                throw new Exception(error.ErrorMessage);
-
-            return updateUserTitleDisplayNameResult;
-        }
-
-        public static async Task<AddUsernamePasswordResult> AddUsernamePassword(AddUsernamePasswordRequest request)
-        {
-            AddUsernamePasswordResult addUsernamePasswordResult = null;
-            PlayFabError error = null;
-
-            PlayFabClientAPI.AddUsernamePassword(request,
-                result => addUsernamePasswordResult = result,
-                err => error = err);
-            
-            await UniTask.WaitUntil(() => addUsernamePasswordResult != null || error != null);
-            if (error != null)
-                throw new Exception(error.ErrorMessage);
-
-            return addUsernamePasswordResult;
-        }
-
-        public static async Task<ExecuteCloudScriptResult> ExecuteCloudScript(ExecuteCloudScriptRequest request)
-        {
-            ExecuteCloudScriptResult executeCloudScriptResult = null;
-            PlayFabError error = null;
-
-            PlayFabClientAPI.ExecuteCloudScript(request, 
-                result => executeCloudScriptResult = result,
-                err => error = err);
-            
-            await UniTask.WaitUntil(() => executeCloudScriptResult != null || error != null);
-
-            if (error != null)
-                throw new Exception(error.ErrorMessage);
-
-            return executeCloudScriptResult;
-        }
+        private delegate void PlayFabAction<in TRequest, out TResult>(
+            TRequest request,
+            Action<TResult> onSuccess,
+            Action<PlayFabError> onError,
+            object customData = null,
+            Dictionary<string, string> extraHeaders = null);
     }
 }
