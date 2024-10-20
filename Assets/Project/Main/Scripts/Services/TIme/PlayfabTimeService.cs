@@ -1,32 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
 using Infrastructure.States;
-using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
+using Utils;
 
 namespace Services.Time
 {
     public class PlayfabTimeService : ITimeService, IPreloadedAfterAuthorization
     {
-        private GetTimeResult _result;
         private TimeSpan _timeOffset;
+        public DateTime UtcNow => DateTime.UtcNow - _timeOffset;
 
         public async Task Preload()
         {
-            var request = new GetTimeRequest();
-            PlayFabClientAPI.GetTime(request, OnTimeGet, OnError);
-            await UniTask.WaitUntil(() => _result != null);
-            _timeOffset = DateTime.UtcNow - _result.Time;
-            _result = null;
+            GetTimeResult result = await PlayFabClientAsyncAPI.GetTime(new GetTimeRequest());
+            _timeOffset = DateTime.UtcNow - result.Time;
+            Debug.Log("Time synchronized. UTC Now: " + UtcNow);
         }
-
-        public DateTime UtcNow => DateTime.UtcNow - _timeOffset;
-
-        private void OnTimeGet(GetTimeResult result) => _result = result;
-
-        private void OnError(PlayFabError error) => 
-            Debug.LogError("Get time error: " + error);
     }
 }

@@ -37,6 +37,9 @@ namespace Utils
         public static async Task<ExecuteCloudScriptResult> ExecuteCloudScript(ExecuteCloudScriptRequest request) => 
             await PlayFabApiCall<ExecuteCloudScriptRequest, ExecuteCloudScriptResult>(request, PlayFabClientAPI.ExecuteCloudScript);
 
+        public static async Task<GetTimeResult> GetTime(GetTimeRequest request) => 
+            await PlayFabApiCall<GetTimeRequest, GetTimeResult>(request, PlayFabClientAPI.GetTime);
+
         private static async Task<TResult> PlayFabApiCall<TRequest, TResult>(TRequest request, PlayFabAction<TRequest, TResult> apiCall) 
             where TResult : PlayFabResultCommon
         {
