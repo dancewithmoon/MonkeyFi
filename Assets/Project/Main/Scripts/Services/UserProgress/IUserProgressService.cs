@@ -1,12 +1,10 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 
 namespace Services.UserProgress
 {
     public interface IUserProgressService
     {
-        event Action OnProgressLoadedEvent;
-        
-        void LoadProgress();
+        Task LoadProgress();
         void SaveProgress();
     }
 }

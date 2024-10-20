@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Infrastructure.StaticData.Services;
 using Models;
 using Services.Time;
@@ -15,8 +16,6 @@ namespace Services.UserProgress
         private readonly ITimeService _timeService;
         private readonly ClickerModel _clickerModel;
 
-        public event Action OnProgressLoadedEvent;
-
         public PlayerPrefsUserProgressService(IStaticDataService staticDataService, ITimeService timeService, ClickerModel clickerModel)
         {
             _staticDataService = staticDataService;
@@ -24,7 +23,7 @@ namespace Services.UserProgress
             _clickerModel = clickerModel;
         }
 
-        public void LoadProgress()
+        public Task LoadProgress()
         {
             ConfigStaticData config = _staticDataService.GetConfig();
             
@@ -40,8 +39,8 @@ namespace Services.UserProgress
                 DateTime.Parse(rawLastEnergyUpdateTime);
             
             _clickerModel.UpdateValues(clickerPoints, currentEnergy, maxEnergy, energyRechargePerSecond, lastEnergyUpdateTime);
-            
-            OnProgressLoadedEvent?.Invoke();
+
+            return Task.CompletedTask;
         }
 
         public void SaveProgress()

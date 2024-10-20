@@ -40,6 +40,38 @@ namespace Utils
             return getAccountInfoResult;
         }
 
+        public static async Task<GetUserDataResult> GetUserData(GetUserDataRequest request)
+        {
+            GetUserDataResult getUserDataResult = null;
+            PlayFabError error = null;
+            
+            PlayFabClientAPI.GetUserData(request, 
+                result => getUserDataResult = result, 
+                err => error = err);
+            
+            await UniTask.WaitUntil(() => getUserDataResult != null || error != null);
+            if (error != null)
+                throw new Exception(error.ErrorMessage);
+
+            return getUserDataResult;
+        }
+        
+        public static async Task<UpdateUserDataResult> UpdateUserData(UpdateUserDataRequest request)
+        {
+            UpdateUserDataResult updateUserDataResult = null;
+            PlayFabError error = null;
+            
+            PlayFabClientAPI.UpdateUserData(request, 
+                result => updateUserDataResult = result, 
+                err => error = err);
+            
+            await UniTask.WaitUntil(() => updateUserDataResult != null || error != null);
+            if (error != null)
+                throw new Exception(error.ErrorMessage);
+
+            return updateUserDataResult;
+        }
+
         public static async Task<UpdateUserTitleDisplayNameResult> UpdateUserTitleDisplayName(
             UpdateUserTitleDisplayNameRequest request)
         {

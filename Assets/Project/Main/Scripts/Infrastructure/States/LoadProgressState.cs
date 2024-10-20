@@ -17,21 +17,18 @@ namespace Infrastructure.States
             _leaderboardService = leaderboardService;
         }
         
-        public void Enter()
+        public async void Enter()
         {
-            _progressService.OnProgressLoadedEvent += OnProgressLoaded;
-            _progressService.LoadProgress();
+            await _progressService.LoadProgress();
             _leaderboardService.LoadLeaderboard();
+            OnProgressLoaded();
         }
 
         public void Exit()
         {
-            _progressService.OnProgressLoadedEvent -= OnProgressLoaded;
         }
 
-        private void OnProgressLoaded()
-        {
+        private void OnProgressLoaded() => 
             StateMachine.Enter<LoadMenuState>();
-        }
     }
 }
