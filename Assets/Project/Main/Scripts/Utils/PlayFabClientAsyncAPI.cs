@@ -72,5 +72,22 @@ namespace Utils
 
             return addUsernamePasswordResult;
         }
+
+        public static async Task<ExecuteCloudScriptResult> ExecuteCloudScript(ExecuteCloudScriptRequest request)
+        {
+            ExecuteCloudScriptResult executeCloudScriptResult = null;
+            PlayFabError error = null;
+
+            PlayFabClientAPI.ExecuteCloudScript(request, 
+                result => executeCloudScriptResult = result,
+                err => error = err);
+            
+            await UniTask.WaitUntil(() => executeCloudScriptResult != null || error != null);
+
+            if (error != null)
+                throw new Exception(error.ErrorMessage);
+
+            return executeCloudScriptResult;
+        }
     }
 }

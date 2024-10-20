@@ -31,8 +31,8 @@ namespace Infrastructure.States
             await _authorizationService.Authorize();
             await PreloadServices();
 
-            if (string.IsNullOrEmpty(_telegramService.ReferralCode) == false)
-                _referralService.GetReferrer(_telegramService.ReferralCode);
+            if (_authorizationService.NewlyCreatedAccount && string.IsNullOrEmpty(_telegramService.ReferralCode) == false)
+                _referralService.ConnectToReferrer(_telegramService.ReferralCode);
             
             StateMachine.Enter<LoadProgressState>();
         }

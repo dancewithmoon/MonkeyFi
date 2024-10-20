@@ -70,7 +70,7 @@ namespace Services.Login
         }
 
         private bool IsUsernameChanged() =>
-            _playerProfile.DisplayName != _userDataService.Username;
+            _playerProfile == null || _playerProfile.DisplayName != _userDataService.Username;
 
         private bool UniqueIdNotSet() =>
             string.IsNullOrEmpty(_userAccountInfo.Username);

@@ -2,6 +2,6 @@
 {
     public interface IReferralService
     {
-        void GetReferrer(string referralCode);
+        void ConnectToReferrer(string referralCode);
     }
 }
