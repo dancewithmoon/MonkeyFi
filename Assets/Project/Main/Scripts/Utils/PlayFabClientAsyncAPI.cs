@@ -16,8 +16,14 @@ namespace Utils
         public static async Task<GetAccountInfoResult> GetAccountInfo(GetAccountInfoRequest request) => 
             await PlayFabApiCall<GetAccountInfoRequest, GetAccountInfoResult>(request, PlayFabClientAPI.GetAccountInfo);
 
+        public static async Task<GetUserDataResult> GetUserReadonlyData(GetUserDataRequest request) => 
+            await PlayFabApiCall<GetUserDataRequest, GetUserDataResult>(request, PlayFabClientAPI.GetUserReadOnlyData);
+        
         public static async Task<GetUserDataResult> GetUserData(GetUserDataRequest request) => 
             await PlayFabApiCall<GetUserDataRequest, GetUserDataResult>(request, PlayFabClientAPI.GetUserData);
+        
+        public static async Task<GetPlayerProfileResult> GetPlayerProfile(GetPlayerProfileRequest request) =>
+            await PlayFabApiCall<GetPlayerProfileRequest, GetPlayerProfileResult>(request, PlayFabClientAPI.GetPlayerProfile);
 
         public static async Task<UpdateUserDataResult> UpdateUserData(UpdateUserDataRequest request) => 
             await PlayFabApiCall<UpdateUserDataRequest, UpdateUserDataResult>(request, PlayFabClientAPI.UpdateUserData);
