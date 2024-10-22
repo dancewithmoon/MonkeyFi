@@ -1,10 +1,25 @@
 mergeInto(LibraryManager.library, {
-  RequestUserData: function () {   
-    if (window.unityInstance) {      
-      window.unityInstance.SendMessage("TelegramBridge", "ReceiveUserData", JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user));
+  GetUserData: function () {
+    var userData = JSON.stringify(window.Telegram.WebApp.initDataUnsafe.user);
+    if(!userData) {
+        userData = "";
     }
+    var bufferSize = lengthBytesUTF8(userData) + 1;
+    var buffer = _malloc(bufferSize);
+    stringToUTF8(userData, buffer, bufferSize);
+    return buffer;
   },
 
+  GetStartParam: function () {  
+    var startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
+    if(!startParam) {
+        startParam = "";
+    }
+    var bufferSize = lengthBytesUTF8(startParam) + 1;
+    var buffer = _malloc(bufferSize);
+    stringToUTF8(startParam, buffer, bufferSize);
+    return buffer;
+  },
 
   ShowMainButton: function (text) {
     if (window && window.Telegram && window.Telegram.WebApp) {

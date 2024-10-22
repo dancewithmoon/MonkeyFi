@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace Services.Telegram
+﻿namespace Services.Telegram
 {
     public interface ITelegramService
     {
         TelegramUserData TelegramUser { get; }
-        event Action OnUserDataLoadedEvent;
+        string ReferralCode { get; }
 
         void Initialize();
     }

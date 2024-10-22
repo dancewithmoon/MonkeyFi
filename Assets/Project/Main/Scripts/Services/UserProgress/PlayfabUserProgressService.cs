@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Infrastructure.StaticData.Services;
 using Models;
-using PlayFab;
 using PlayFab.ClientModels;
 using Services.Time;
 using StaticData;
 using UnityEngine;
+using Utils;
 
 namespace Services.UserProgress
 {
@@ -23,8 +24,6 @@ namespace Services.UserProgress
         private int _currentEnergy;
         private int _energyRechargePerSecond;
 
-        public event Action OnProgressLoadedEvent;
-
         public PlayfabUserProgressService(IStaticDataService staticDataService, ITimeService timeService, ClickerModel clickerModel)
         {
             _staticDataService = staticDataService;
@@ -32,28 +31,11 @@ namespace Services.UserProgress
             _clickerModel = clickerModel;
         }
         
-        public void LoadProgress()
+        public async Task LoadProgress()
         {
-            var request = new GetUserDataRequest();
-            PlayFabClientAPI.GetUserData(request, OnProgressLoaded, OnPlayfabError);
-        }
-
-        public void SaveProgress()
-        {
-            Dictionary<string, string> progressData = GetProgressData();
-            if(progressData.Count == 0)
-                return;
+            GetUserDataResult result = await PlayFabClientAsyncAPI.GetUserData(new GetUserDataRequest());
             
-            var request = new UpdateUserDataRequest
-            {
-                Data = progressData
-            };
-            PlayFabClientAPI.UpdateUserData(request, OnProgressSaved, OnPlayfabError);
-        }
-        
-        private void OnProgressLoaded(GetUserDataResult result)
-        {
-            Debug.Log("Progress loaded: " + result);
+            Debug.Log("Progress loaded: " + result.ToJson());
             
             _rawProgress = result;
 
@@ -65,7 +47,17 @@ namespace Services.UserProgress
             
             _clickerModel.UpdateValues(_clickerPoints, _currentEnergy, _maxEnergy, _energyRechargePerSecond, _lastEnergyUpdateTime);
             _clickerModel.RechargeEnergy();
-            OnProgressLoadedEvent?.Invoke();
+        }
+
+        public async void SaveProgress()
+        {
+            Dictionary<string, string> progressData = GetProgressData();
+            if(progressData.Count == 0)
+                return;
+            
+            var request = new UpdateUserDataRequest { Data = progressData };
+            UpdateUserDataResult result = await PlayFabClientAsyncAPI.UpdateUserData(request);
+            Debug.Log("Progress saved: " + result);
         }
 
         private int GetIntegerValue(string key, int defaultValue)
@@ -118,11 +110,5 @@ namespace Services.UserProgress
 
             return result;
         }
-
-        private void OnProgressSaved(UpdateUserDataResult result) => 
-            Debug.Log("Progress saved: " + result);
-        
-        private void OnPlayfabError(PlayFabError error) => 
-            Debug.LogError("Playfab error: " + error);
     }
 }
