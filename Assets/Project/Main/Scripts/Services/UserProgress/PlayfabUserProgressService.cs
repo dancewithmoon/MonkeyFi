@@ -35,7 +35,7 @@ namespace Services.UserProgress
         {
             GetUserDataResult result = await PlayFabClientAsyncAPI.GetUserData(new GetUserDataRequest());
             
-            Debug.Log("Progress loaded: " + result);
+            Debug.Log("Progress loaded: " + result.ToJson());
             
             _rawProgress = result;
 

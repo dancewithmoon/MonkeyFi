@@ -1,5 +1,7 @@
-﻿using Base.States;
+﻿using System.Threading.Tasks;
+using Base.States;
 using Services.Leaderboard;
+using Services.Referral;
 using Services.UserProgress;
 
 namespace Infrastructure.States
@@ -8,18 +10,23 @@ namespace Infrastructure.States
     {
         private readonly IUserProgressService _progressService;
         private readonly ILeaderboardService _leaderboardService;
+        private readonly IReferralService _referralService;
 
         public IGameStateMachine StateMachine { get; set; }
 
-        public LoadProgressState(IUserProgressService progressService, ILeaderboardService leaderboardService)
+        public LoadProgressState(IUserProgressService progressService, ILeaderboardService leaderboardService, IReferralService referralService)
         {
             _progressService = progressService;
             _leaderboardService = leaderboardService;
+            _referralService = referralService;
         }
         
         public async void Enter()
         {
-            await _progressService.LoadProgress();
+            await Task.WhenAll(
+                _progressService.LoadProgress(),
+                _referralService.LoadReferrals());
+            
             _leaderboardService.LoadLeaderboard();
             OnProgressLoaded();
         }
