@@ -2,7 +2,7 @@
 
 namespace Services.Telegram
 {
-    public class TelegramService : ITelegramService
+    public class TelegramService : ITelegramService, IShareService
     {
         public string ReferralCode { get; private set; }
         public TelegramUserData TelegramUser { get; private set; }
@@ -12,6 +12,9 @@ namespace Services.Telegram
             ReferralCode = TelegramBridge.GetTelegramStartParam();
             TelegramUser = CreateUserData(TelegramBridge.GetTelegramUserData());
         }
+
+        public void Share(string message, string url) => 
+            TelegramBridge.Share(message, url);
 
         private static TelegramUserData CreateUserData(TelegramUserDto telegramUser) =>
             new(telegramUser.id, telegramUser.username);

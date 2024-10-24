@@ -11,6 +11,7 @@ namespace Services.Login
         private PlayerProfileModel _playerProfile;
 
         public bool NewlyCreatedAccount { get; private set; }
+        public string UserUniqueId => _userAccountInfo.Username;
 
         public PlayfabAuthorizationService(UserDataService userDataService)
         {

@@ -8,5 +8,6 @@ namespace Services.Referral
         List<ReferralModel> Referrals { get; }
         void ConnectToReferrer(string referralCode);
         Task LoadReferrals();
+        void InviteFriends();
     }
 }

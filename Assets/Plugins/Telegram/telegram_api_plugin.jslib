@@ -69,8 +69,12 @@ mergeInto(LibraryManager.library, {
     }
   },
 
-  ShowShareJoinCode: function (code) {
-
+  Share: function (messagePtr, urlPtr) {
+      const message = UTF8ToString(messagePtr);
+      const url = UTF8ToString(urlPtr);
+      console.log("message: " + message);
+      console.log("url: " + url);
+      window.open(`https://t.me/share/url?url=${url}&text=${message}`);
   },
 
   Ready: function () {

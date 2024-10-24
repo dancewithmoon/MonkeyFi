@@ -40,7 +40,7 @@ namespace Plugins.Telegram
         public static extern void ShowAlert(string text);
 
         [DllImport("__Internal")]
-        public static extern void ShowShareJoinCode(string code);
+        public static extern void Share(string message, string url);
 
         [DllImport("__Internal")]
         public static extern void Ready();

@@ -26,7 +26,7 @@ namespace UI.Windows
         private UserDataService _userDataService;
         private IReferralService _referralService;
         private IGameFactory _gameFactory;
-        
+
         private readonly Dictionary<ReferralModel, FriendItem> _friends = new();
 
         [Inject]
@@ -81,10 +81,8 @@ namespace UI.Windows
 
             item.Draw();
         }
-        
-        private void OnInviteFriendsClick()
-        {
-            
-        }
+
+        private void OnInviteFriendsClick() => 
+            _referralService.InviteFriends();
     }
 }

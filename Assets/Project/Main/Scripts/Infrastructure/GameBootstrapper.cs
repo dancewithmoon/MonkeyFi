@@ -48,8 +48,8 @@ namespace Infrastructure
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<StaticDataService>().AsSingle();
             Container.BindInterfacesTo<WindowService>().AsSingle();
+            Container.BindInterfacesTo(GetTelegramServiceImplementation()).AsSingle();
             Container.Bind<IReferralService>().To<PlayfabReferralService>().AsSingle();
-            Container.Bind<ITelegramService>().To(GetTelegramServiceImplementation()).AsSingle();
             Container.Bind<UserDataService>().AsSingle();
             Container.Bind<IAuthorizationService>().To<PlayfabAuthorizationService>().AsSingle();
             Container.Bind<IUserProgressService>().To<PlayfabUserProgressService>().AsSingle();
