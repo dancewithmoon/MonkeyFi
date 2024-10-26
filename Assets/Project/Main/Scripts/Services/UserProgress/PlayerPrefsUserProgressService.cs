@@ -12,13 +12,13 @@ namespace Services.UserProgress
     {
         private const string LastEnergyUpdateTimeKey = "LastEnergyUpdateTime";
         
-        private readonly IConfigService _configService;
+        private readonly IConfigProvider _configProvider;
         private readonly ITimeService _timeService;
         private readonly ClickerModel _clickerModel;
 
-        public PlayerPrefsUserProgressService(IConfigService configService, ITimeService timeService, ClickerModel clickerModel)
+        public PlayerPrefsUserProgressService(IConfigProvider configProvider, ITimeService timeService, ClickerModel clickerModel)
         {
-            _configService = configService;
+            _configProvider = configProvider;
             _timeService = timeService;
             _clickerModel = clickerModel;
         }
@@ -26,9 +26,9 @@ namespace Services.UserProgress
         public Task LoadProgress()
         {
             int clickerPoints = PlayerPrefs.GetInt(ProgressKeys.ClickerPointsKey, 0);
-            int maxEnergy = PlayerPrefs.GetInt(ProgressKeys.MaxEnergyKey, _configService.Config.DefaultMaxEnergy);
+            int maxEnergy = PlayerPrefs.GetInt(ProgressKeys.MaxEnergyKey, _configProvider.Config.DefaultMaxEnergy);
             int currentEnergy = PlayerPrefs.GetInt(ProgressKeys.CurrentEnergyKey, maxEnergy);
-            int energyRechargePerSecond = PlayerPrefs.GetInt(ProgressKeys.EnergyRechargePerSecondKey, _configService.Config.DefaultEnergyRechargePerSecond);
+            int energyRechargePerSecond = PlayerPrefs.GetInt(ProgressKeys.EnergyRechargePerSecondKey, _configProvider.Config.DefaultEnergyRechargePerSecond);
             
             string rawLastEnergyUpdateTime = PlayerPrefs.GetString(LastEnergyUpdateTimeKey, string.Empty);
             

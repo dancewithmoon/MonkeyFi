@@ -6,9 +6,9 @@ using Utils;
 
 namespace Services.Config
 {
-    public class PlayfabConfigService : IConfigService, IPreloadedAfterAuthorization
+    public class PlayfabConfigProvider : IConfigProvider, IPreloadedAfterAuthorization
     {
-        public ConfigModel Config { get; private set; }
+        public ConfigData Config { get; private set; }
         
         public async Task Preload()
         {
@@ -16,7 +16,7 @@ namespace Services.Config
             Config = ParseRawConfig(result.Data);
         }
 
-        private ConfigModel ParseRawConfig(Dictionary<string, string> rawConfig)
+        private ConfigData ParseRawConfig(Dictionary<string, string> rawConfig)
         {
             int defaultMaxEnergy = int.Parse(rawConfig[nameof(Config.DefaultMaxEnergy)]);
             int defaultEnergyRechargePerSecond = int.Parse(rawConfig[nameof(Config.DefaultEnergyRechargePerSecond)]);
@@ -26,7 +26,7 @@ namespace Services.Config
             string shareMessage = rawConfig[nameof(Config.ShareMessage)];
             string shareUrl = rawConfig[nameof(Config.ShareUrl)];
             
-            return new ConfigModel(defaultMaxEnergy, defaultEnergyRechargePerSecond, saveFrequencyInSeconds,
+            return new ConfigData(defaultMaxEnergy, defaultEnergyRechargePerSecond, saveFrequencyInSeconds,
                 statisticsUpdateFrequencyInSeconds, leaderboardSize, shareMessage, shareUrl);
         }
     }

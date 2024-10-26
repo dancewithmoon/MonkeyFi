@@ -1,6 +1,6 @@
 ﻿namespace Services.Config
 {
-    public class ConfigModel
+    public class ConfigData
     {
         public int DefaultMaxEnergy { get; }
         public int DefaultEnergyRechargePerSecond { get; }
@@ -10,7 +10,7 @@
         public string ShareMessage { get; }
         public string ShareUrl { get; }
 
-        public ConfigModel(int defaultMaxEnergy, int defaultEnergyRechargePerSecond, int saveFrequencyInSeconds,
+        public ConfigData(int defaultMaxEnergy, int defaultEnergyRechargePerSecond, int saveFrequencyInSeconds,
             int statisticsUpdateFrequencyInSeconds, int leaderboardSize, string shareMessage, string shareUrl)
         {
             DefaultMaxEnergy = defaultMaxEnergy;

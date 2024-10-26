@@ -13,15 +13,15 @@ namespace Services.Leaderboard
         private const string StatisticName = "Leaderboard";
         
         private readonly ClickerModel _clickerModel;
-        private readonly IConfigService _configService;
+        private readonly IConfigProvider _configProvider;
         private readonly Dictionary<string, LeaderboardEntryModel> _leaderboard = new();
 
         public List<LeaderboardEntryModel> Leaderboard => _leaderboard.Values.ToList();
 
-        public PlayfabLeaderboardService(ClickerModel clickerModel, IConfigService configService)
+        public PlayfabLeaderboardService(ClickerModel clickerModel, IConfigProvider configProvider)
         {
             _clickerModel = clickerModel;
-            _configService = configService;
+            _configProvider = configProvider;
         }
 
         public async void LoadLeaderboard()
@@ -29,7 +29,7 @@ namespace Services.Leaderboard
             var request = new GetLeaderboardRequest
             {
                 StatisticName = StatisticName,
-                MaxResultsCount = _configService.Config.LeaderboardSize
+                MaxResultsCount = _configProvider.Config.LeaderboardSize
             };
 
             GetLeaderboardResult result = await PlayFabClientAsyncAPI.GetLeaderboard(request);

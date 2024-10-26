@@ -17,7 +17,7 @@ namespace Infrastructure.States
         private readonly ILeaderboardService _leaderboardService;
         private readonly ICoroutineRunner _coroutineRunner;
         private readonly IWindowService _windowService;
-        private readonly IConfigService _configService;
+        private readonly IConfigProvider _configProvider;
         private Coroutine _energyRechargeCoroutine;
         private Coroutine _progressSaveCoroutine;
         private Coroutine _statisticsUpdateCoroutine;
@@ -26,14 +26,14 @@ namespace Infrastructure.States
 
         public MenuState(ClickerModel clickerModel, IUserProgressService progressService,
             ILeaderboardService leaderboardService, ICoroutineRunner coroutineRunner,
-            IWindowService windowService, IConfigService configService)
+            IWindowService windowService, IConfigProvider configProvider)
         {
             _clickerModel = clickerModel;
             _progressService = progressService;
             _leaderboardService = leaderboardService;
             _coroutineRunner = coroutineRunner;
             _windowService = windowService;
-            _configService = configService;
+            _configProvider = configProvider;
         }
 
         public void Enter()
@@ -66,7 +66,7 @@ namespace Infrastructure.States
         
         private IEnumerator ProgressSaveCoroutine()
         {
-            WaitForSeconds waitForSave = new WaitForSeconds(_configService.Config.SaveFrequencyInSeconds);
+            WaitForSeconds waitForSave = new WaitForSeconds(_configProvider.Config.SaveFrequencyInSeconds);
             while (_coroutineRunner != null)
             {
                 yield return waitForSave;
@@ -76,7 +76,7 @@ namespace Infrastructure.States
 
         private IEnumerator StatisticsUpdateCoroutine()
         {
-            WaitForSeconds waitForSave = new WaitForSeconds(_configService.Config.StatisticsUpdateFrequencyInSeconds);
+            WaitForSeconds waitForSave = new WaitForSeconds(_configProvider.Config.StatisticsUpdateFrequencyInSeconds);
             while (_coroutineRunner != null)
             {
                 yield return waitForSave;

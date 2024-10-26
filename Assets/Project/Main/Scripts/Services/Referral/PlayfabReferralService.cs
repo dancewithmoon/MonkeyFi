@@ -13,7 +13,7 @@ namespace Services.Referral
     public class PlayfabReferralService : IReferralService
     {
         private readonly IAuthorizationService _authorizationService;
-        private readonly IConfigService _configService;
+        private readonly IConfigProvider _configProvider;
         private readonly IShareService _shareService;
 
         private const string AddReferralFunctionName = "AddReferral";
@@ -21,10 +21,10 @@ namespace Services.Referral
 
         public List<ReferralModel> Referrals { get; private set; }
 
-        public PlayfabReferralService(IAuthorizationService authorizationService, IConfigService configService, IShareService shareService)
+        public PlayfabReferralService(IAuthorizationService authorizationService, IConfigProvider configProvider, IShareService shareService)
         {
             _authorizationService = authorizationService;
-            _configService = configService;
+            _configProvider = configProvider;
             _shareService = shareService;
         }
 
@@ -59,8 +59,8 @@ namespace Services.Referral
 
         public void InviteFriends()
         {
-            string shareUrl = _configService.Config.ShareUrl + _authorizationService.UserUniqueId;
-            _shareService.Share(_configService.Config.ShareMessage, shareUrl);
+            string shareUrl = _configProvider.Config.ShareUrl + _authorizationService.UserUniqueId;
+            _shareService.Share(_configProvider.Config.ShareMessage, shareUrl);
         }
 
         private async Task<string> GetReferrerPlayfabId(string referralCode)

@@ -12,7 +12,7 @@ namespace Services.UserProgress
 {
     public class PlayfabUserProgressService : IUserProgressService
     {
-        private readonly IConfigService _configService;
+        private readonly IConfigProvider _configProvider;
         private readonly ITimeService _timeService;
         private readonly ClickerModel _clickerModel;
         private GetUserDataResult _rawProgress;
@@ -23,9 +23,9 @@ namespace Services.UserProgress
         private int _currentEnergy;
         private int _energyRechargePerSecond;
 
-        public PlayfabUserProgressService(IConfigService configService, ITimeService timeService, ClickerModel clickerModel)
+        public PlayfabUserProgressService(IConfigProvider configProvider, ITimeService timeService, ClickerModel clickerModel)
         {
-            _configService = configService;
+            _configProvider = configProvider;
             _timeService = timeService;
             _clickerModel = clickerModel;
         }
@@ -39,8 +39,8 @@ namespace Services.UserProgress
             _rawProgress = result;
             
             _clickerPoints = GetIntegerValue(ProgressKeys.ClickerPointsKey, 0);
-            _maxEnergy = GetIntegerValue(ProgressKeys.MaxEnergyKey, _configService.Config.DefaultMaxEnergy);
-            _energyRechargePerSecond = GetIntegerValue(ProgressKeys.EnergyRechargePerSecondKey, _configService.Config.DefaultEnergyRechargePerSecond);
+            _maxEnergy = GetIntegerValue(ProgressKeys.MaxEnergyKey, _configProvider.Config.DefaultMaxEnergy);
+            _energyRechargePerSecond = GetIntegerValue(ProgressKeys.EnergyRechargePerSecondKey, _configProvider.Config.DefaultEnergyRechargePerSecond);
             _currentEnergy = GetEnergyValue(_maxEnergy);
             
             _clickerModel.UpdateValues(_clickerPoints, _currentEnergy, _maxEnergy, _energyRechargePerSecond, _lastEnergyUpdateTime);
