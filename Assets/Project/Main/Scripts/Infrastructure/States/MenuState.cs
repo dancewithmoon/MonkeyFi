@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using Base.Services.CoroutineRunner;
 using Base.States;
-using Infrastructure.StaticData.Services;
 using Models;
 using Services;
+using Services.Config;
 using Services.Leaderboard;
 using Services.UserProgress;
-using StaticData;
 using UnityEngine;
 
 namespace Infrastructure.States
@@ -16,10 +15,9 @@ namespace Infrastructure.States
         private readonly ClickerModel _clickerModel;
         private readonly IUserProgressService _progressService;
         private readonly ILeaderboardService _leaderboardService;
-        private readonly IStaticDataService _staticDataService;
         private readonly ICoroutineRunner _coroutineRunner;
         private readonly IWindowService _windowService;
-        private ConfigStaticData _config;
+        private readonly IConfigProvider _configProvider;
         private Coroutine _energyRechargeCoroutine;
         private Coroutine _progressSaveCoroutine;
         private Coroutine _statisticsUpdateCoroutine;
@@ -27,20 +25,19 @@ namespace Infrastructure.States
         public IGameStateMachine StateMachine { get; set; }
 
         public MenuState(ClickerModel clickerModel, IUserProgressService progressService,
-            ILeaderboardService leaderboardService, IStaticDataService staticDataService,
-            ICoroutineRunner coroutineRunner, IWindowService windowService)
+            ILeaderboardService leaderboardService, ICoroutineRunner coroutineRunner,
+            IWindowService windowService, IConfigProvider configProvider)
         {
             _clickerModel = clickerModel;
             _progressService = progressService;
             _leaderboardService = leaderboardService;
-            _staticDataService = staticDataService;
             _coroutineRunner = coroutineRunner;
             _windowService = windowService;
+            _configProvider = configProvider;
         }
 
         public void Enter()
         {
-            _config = _staticDataService.GetConfig();
             _energyRechargeCoroutine = _coroutineRunner.StartCoroutine(EnergyRechargeCoroutine());
             _progressSaveCoroutine = _coroutineRunner.StartCoroutine(ProgressSaveCoroutine());
             _statisticsUpdateCoroutine = _coroutineRunner.StartCoroutine(StatisticsUpdateCoroutine());
@@ -69,7 +66,7 @@ namespace Infrastructure.States
         
         private IEnumerator ProgressSaveCoroutine()
         {
-            WaitForSeconds waitForSave = new WaitForSeconds(_config.SaveFrequencyInSeconds);
+            WaitForSeconds waitForSave = new WaitForSeconds(_configProvider.Config.SaveFrequencyInSeconds);
             while (_coroutineRunner != null)
             {
                 yield return waitForSave;
@@ -79,7 +76,7 @@ namespace Infrastructure.States
 
         private IEnumerator StatisticsUpdateCoroutine()
         {
-            WaitForSeconds waitForSave = new WaitForSeconds(_config.StatisticsUpdateFrequencyInSeconds);
+            WaitForSeconds waitForSave = new WaitForSeconds(_configProvider.Config.StatisticsUpdateFrequencyInSeconds);
             while (_coroutineRunner != null)
             {
                 yield return waitForSave;

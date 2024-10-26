@@ -46,6 +46,9 @@ namespace Utils
         public static async Task<GetTimeResult> GetTime(GetTimeRequest request) => 
             await PlayFabApiCall<GetTimeRequest, GetTimeResult>(request, PlayFabClientAPI.GetTime);
 
+        public static async Task<GetTitleDataResult> GetTitleData(GetTitleDataRequest request) => 
+            await PlayFabApiCall<GetTitleDataRequest, GetTitleDataResult>(request, PlayFabClientAPI.GetTitleData);
+        
         private static async Task<TResult> PlayFabApiCall<TRequest, TResult>(TRequest request, PlayFabAction<TRequest, TResult> apiCall) 
             where TResult : PlayFabResultCommon
         {

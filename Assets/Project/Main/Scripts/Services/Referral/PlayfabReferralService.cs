@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Infrastructure.StaticData.Services;
 using PlayFab.ClientModels;
+using Services.Config;
 using Services.Login;
-using StaticData;
 using UnityEngine;
 using Utils;
 
@@ -14,7 +13,7 @@ namespace Services.Referral
     public class PlayfabReferralService : IReferralService
     {
         private readonly IAuthorizationService _authorizationService;
-        private readonly IStaticDataService _staticDataService;
+        private readonly IConfigProvider _configProvider;
         private readonly IShareService _shareService;
 
         private const string AddReferralFunctionName = "AddReferral";
@@ -22,10 +21,10 @@ namespace Services.Referral
 
         public List<ReferralModel> Referrals { get; private set; }
 
-        public PlayfabReferralService(IAuthorizationService authorizationService, IStaticDataService staticDataService, IShareService shareService)
+        public PlayfabReferralService(IAuthorizationService authorizationService, IConfigProvider configProvider, IShareService shareService)
         {
             _authorizationService = authorizationService;
-            _staticDataService = staticDataService;
+            _configProvider = configProvider;
             _shareService = shareService;
         }
 
@@ -60,10 +59,8 @@ namespace Services.Referral
 
         public void InviteFriends()
         {
-            ConfigStaticData config = _staticDataService.GetConfig();
-            string shareUrl = config.ShareUrl + _authorizationService.UserUniqueId;
-            Debug.LogError("MESSAGE: " + config.ShareMessage + " |URL: " + shareUrl);
-            _shareService.Share(config.ShareMessage, shareUrl);
+            string shareUrl = _configProvider.Config.ShareUrl + _authorizationService.UserUniqueId;
+            _shareService.Share(_configProvider.Config.ShareMessage, shareUrl);
         }
 
         private async Task<string> GetReferrerPlayfabId(string referralCode)
