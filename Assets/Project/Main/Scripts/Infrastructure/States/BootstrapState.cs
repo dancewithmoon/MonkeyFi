@@ -8,8 +8,6 @@ namespace Infrastructure.States
 {
     public class BootstrapState : IState
     {
-        private const string InitialScene = "Initial";
-        
         private readonly SceneLoader _sceneLoader;
         private readonly List<IPreloadedInBootstrap> _toPreload;
 
@@ -24,7 +22,7 @@ namespace Infrastructure.States
         public async void Enter()
         {
             await Task.WhenAll(_toPreload.Select(obj => obj.Preload()));
-            _sceneLoader.Load(InitialScene, EnterLoadLevel);
+            _sceneLoader.Load(Scenes.InitialScene, EnterLoadLevel);
         }
 
         public void Exit()

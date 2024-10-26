@@ -33,6 +33,7 @@ namespace UI.Elements
         private void OnButtonClick(BottomPanelButton selectedButton)
         {
             _selectedButton = selectedButton;
+            _windowService.ClearHistory();
             _windowService.ShowWindow(_selectedButton.DestinationWindow);
             UpdateButtonsSelection();
         }

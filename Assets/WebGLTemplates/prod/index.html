@@ -52,7 +52,6 @@
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       }).then((unityInstance) => {
-        console.log('Instance created',window.Telegram.WebApp);
                 window.unityInstance = unityInstance;
             });
     </script>
@@ -61,12 +60,6 @@
     if(window.Telegram.WebApp){
         window.Telegram.WebApp.expand();
         window.Telegram.WebApp.enableClosingConfirmation();
-        window.Telegram.WebApp.onEvent('qrTextReceived',async (obj)=>{
-            console.log('#qrTextReceived',obj)
-            if( window.unityInstance){
-                window.unityInstance.SendMessage("TelegramBridge", "ReceiveUserData", obj.data);
-            }
-        })
     }
     </script>
 </body>

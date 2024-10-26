@@ -7,7 +7,7 @@ namespace UI.Windows
     {
         private Canvas _canvas;
 
-        private void Awake() => 
+        public virtual void OnWindowCreated() => 
             _canvas = GetComponent<Canvas>();
 
         public bool Visible
@@ -15,6 +15,9 @@ namespace UI.Windows
             get => _canvas.enabled;
             set
             {
+                if(_canvas.enabled == value)
+                    return;
+                
                 _canvas.enabled = value;
                 if(value)
                     OnWindowShow();

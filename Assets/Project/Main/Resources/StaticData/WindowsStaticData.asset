@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _windowPrefabs:
     _serializedList:
-    - Key: 1
-      Value: {fileID: 9100922298170687194, guid: 817fe72ec8f88ec4b95561facb8cc1ce, type: 3}
-    - Key: 2
-      Value: {fileID: 576256805279783355, guid: a285a3877cd1705449626b9a87d2daa9, type: 3}
+    - Key: 4
+      Value: {fileID: 252530661750543806, guid: a399aa4ae1f19054ea3ec3e38a9b0a0b, type: 3}
     - Key: 3
       Value: {fileID: 3115742966672058461, guid: 90f6075a18200744ca8ac5201cc4a81f, type: 3}
+    - Key: 2
+      Value: {fileID: 576256805279783355, guid: a285a3877cd1705449626b9a87d2daa9, type: 3}
+    - Key: 1
+      Value: {fileID: 9100922298170687194, guid: 817fe72ec8f88ec4b95561facb8cc1ce, type: 3}

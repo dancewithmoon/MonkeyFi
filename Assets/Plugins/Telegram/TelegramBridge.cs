@@ -1,21 +1,22 @@
-using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace Plugins.Telegram
 {
-    public class TelegramBridge : MonoBehaviour
+    public static class TelegramBridge
     {
-        public event Action<TelegramUserDto> OnUserDataReceiveEvent;
-        
-        public void ReceiveUserData(string data)
-        {
-            var user = JsonUtility.FromJson<TelegramUserDto>(data);
-            OnUserDataReceiveEvent?.Invoke(user);
-        }
+        public static TelegramUserDto GetTelegramUserData() => 
+            JsonUtility.FromJson<TelegramUserDto>(
+                Marshal.PtrToStringAnsi(GetUserData()));
+
+        public static string GetTelegramStartParam() => 
+            Marshal.PtrToStringAnsi(GetStartParam());
+
+        [DllImport("__Internal")]
+        private static extern System.IntPtr GetUserData();
         
         [DllImport("__Internal")]
-        public static extern void RequestUserData();
+        private static extern System.IntPtr GetStartParam();
 
         [DllImport("__Internal")]
         public static extern void ShowMainButton(string text);
@@ -39,7 +40,7 @@ namespace Plugins.Telegram
         public static extern void ShowAlert(string text);
 
         [DllImport("__Internal")]
-        public static extern void ShowShareJoinCode(string code);
+        public static extern void Share(string message, string url);
 
         [DllImport("__Internal")]
         public static extern void Ready();

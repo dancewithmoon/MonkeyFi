@@ -1,10 +1,11 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 
 namespace Services.Login
 {
     public interface IAuthorizationService
     {
-        void Authorize();
-        event Action OnAuthorizationSuccessEvent;
+        bool NewlyCreatedAccount { get; }
+        string UserUniqueId { get; }
+        Task Authorize();
     }
 }

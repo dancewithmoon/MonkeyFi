@@ -5,9 +5,12 @@ using Infrastructure.Factory;
 using Infrastructure.States;
 using Infrastructure.StaticData.Services;
 using Models;
+using MonkeyBusiness.Infrastructure.Factory;
 using Services;
+using Services.Config;
 using Services.Leaderboard;
 using Services.Login;
+using Services.Referral;
 using Services.Telegram;
 using Services.Time;
 using Services.UserProgress;
@@ -42,14 +45,17 @@ namespace Infrastructure
         
         private void BindServices()
         {
+            Container.Bind<IMonkeyBusinessFactory>().To<MonkeyBusinessFactory>().AsSingle();
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<StaticDataService>().AsSingle();
+            Container.BindInterfacesTo<PlayfabConfigProvider>().AsSingle();
             Container.BindInterfacesTo<WindowService>().AsSingle();
-            Container.Bind<ITelegramService>().To(GetTelegramServiceImplementation()).AsSingle();
+            Container.BindInterfacesTo(GetTelegramServiceImplementation()).AsSingle();
+            Container.Bind<IReferralService>().To<PlayfabReferralService>().AsSingle();
             Container.Bind<UserDataService>().AsSingle();
             Container.Bind<IAuthorizationService>().To<PlayfabAuthorizationService>().AsSingle();
             Container.Bind<IUserProgressService>().To<PlayfabUserProgressService>().AsSingle();
-            Container.Bind<ILeaderboardService>().To<PlayfabLeaderboardService>().AsSingle();
+            Container.BindInterfacesTo<PlayfabLeaderboardService>().AsSingle();
         }
 
         private void BindStates()
@@ -57,8 +63,10 @@ namespace Infrastructure
             Container.Bind<IExitableState>().To<BootstrapState>().AsSingle();
             Container.Bind<IExitableState>().To<UserAuthorizationState>().AsSingle();
             Container.Bind<IExitableState>().To<LoadProgressState>().AsSingle();
-            Container.Bind<IExitableState>().To<LoadLevelState>().AsSingle();
-            Container.Bind<IExitableState>().To<GameLoopState>().AsSingle();
+            Container.Bind<IExitableState>().To<LoadMenuState>().AsSingle();
+            Container.Bind<IExitableState>().To<MenuState>().AsSingle();
+            Container.Bind<IExitableState>().To<LoadMonkeyBusinessState>().AsSingle();
+            Container.Bind<IExitableState>().To<MonkeyBusinessState>().AsSingle();
         }
 
         public override void Start()

@@ -1,42 +1,56 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Infrastructure.StaticData.Services;
+using System.Threading.Tasks;
+using Base.States;
 using Models;
-using PlayFab;
 using PlayFab.ClientModels;
+using Services.Config;
 using UnityEngine;
+using Utils;
 
 namespace Services.Leaderboard
 {
-    public class PlayfabLeaderboardService : ILeaderboardService
+    public class PlayfabLeaderboardService : ILeaderboardService, IPreloadedInLoadMenu
     {
         private const string StatisticName = "Leaderboard";
         
         private readonly ClickerModel _clickerModel;
-        private readonly IStaticDataService _staticDataService;
+        private readonly IConfigProvider _configProvider;
         private readonly Dictionary<string, LeaderboardEntryModel> _leaderboard = new();
-
+        
         public List<LeaderboardEntryModel> Leaderboard => _leaderboard.Values.ToList();
+        private int _previousPointsValue;
 
-        public PlayfabLeaderboardService(ClickerModel clickerModel, IStaticDataService staticDataService)
+        public PlayfabLeaderboardService(ClickerModel clickerModel, IConfigProvider configProvider)
         {
             _clickerModel = clickerModel;
-            _staticDataService = staticDataService;
+            _configProvider = configProvider;
+        }
+        
+        public Task Preload()
+        {
+            _previousPointsValue = _clickerModel.Points;
+            return Task.CompletedTask;
         }
 
-        public void LoadLeaderboard()
+        public async void LoadLeaderboard()
         {
             var request = new GetLeaderboardRequest
             {
                 StatisticName = StatisticName,
-                MaxResultsCount = _staticDataService.GetConfig().LeaderboardSize
+                MaxResultsCount = _configProvider.Config.LeaderboardSize
             };
 
-            PlayFabClientAPI.GetLeaderboard(request, OnLeaderboardReceived, OnError);
+            GetLeaderboardResult result = await PlayFabClientAsyncAPI.GetLeaderboard(request);
+            foreach (PlayerLeaderboardEntry entry in result.Leaderboard)
+                _leaderboard[entry.PlayFabId] = new LeaderboardEntryModel(entry.DisplayName, entry.StatValue);
         }
 
-        public void UpdatePlayerStatistics()
+        public async void UpdatePlayerStatistics()
         {
+            if(_clickerModel.Points == _previousPointsValue)
+                return;
+            
             var request = new UpdatePlayerStatisticsRequest
             {
                 Statistics = new List<StatisticUpdate>
@@ -48,19 +62,10 @@ namespace Services.Leaderboard
                     }
                 }
             };
-            PlayFabClientAPI.UpdatePlayerStatistics(request, OnRequestSent, OnError);
-        }
 
-        private void OnLeaderboardReceived(GetLeaderboardResult result)
-        {
-            foreach (PlayerLeaderboardEntry entry in result.Leaderboard)
-                _leaderboard[entry.PlayFabId] = new LeaderboardEntryModel(entry.DisplayName, entry.StatValue);
-        }
-
-        private void OnRequestSent(UpdatePlayerStatisticsResult result) => 
+            UpdatePlayerStatisticsResult result = await PlayFabClientAsyncAPI.UpdatePlayerStatistics(request);
+            _previousPointsValue = _clickerModel.Points;
             Debug.Log("Player statistics sent: " + result.ToJson());
-        
-        private void OnError(PlayFabError error) => 
-            Debug.LogError("Playfab error: " + error);
+        }
     }
 }

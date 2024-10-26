@@ -1,33 +1,22 @@
-﻿using System;
-using Plugins.Telegram;
-using UnityEngine;
-using Object = UnityEngine.Object;
+﻿using Plugins.Telegram;
 
 namespace Services.Telegram
 {
-    public class TelegramService : ITelegramService
+    public class TelegramService : ITelegramService, IShareService
     {
+        public string ReferralCode { get; private set; }
         public TelegramUserData TelegramUser { get; private set; }
         
-        public event Action OnUserDataLoadedEvent;
-
         public void Initialize()
         {
-            InitializeBridge();
-            TelegramBridge.RequestUserData();
+            ReferralCode = TelegramBridge.GetTelegramStartParam();
+            TelegramUser = CreateUserData(TelegramBridge.GetTelegramUserData());
         }
 
-        private void InitializeBridge()
-        {
-            var bridge = new GameObject("TelegramBridge").AddComponent<TelegramBridge>();
-            Object.DontDestroyOnLoad(bridge);
-            bridge.OnUserDataReceiveEvent += OnUserDataReceive;
-        }
-        
-        private void OnUserDataReceive(TelegramUserDto user)
-        {
-            TelegramUser = new TelegramUserData(user.id, user.username);
-            OnUserDataLoadedEvent?.Invoke();
-        }
+        public void Share(string message, string url) => 
+            TelegramBridge.Share(message, url);
+
+        private static TelegramUserData CreateUserData(TelegramUserDto telegramUser) =>
+            new(telegramUser.id, telegramUser.username);
     }
 }

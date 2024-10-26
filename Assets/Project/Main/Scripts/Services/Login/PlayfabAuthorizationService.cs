@@ -1,22 +1,38 @@
-﻿using System;
-using PlayFab;
+﻿using System.Threading.Tasks;
 using PlayFab.ClientModels;
-using UnityEngine;
+using Utils;
 
 namespace Services.Login
 {
     public class PlayfabAuthorizationService : IAuthorizationService
     {
         private readonly UserDataService _userDataService;
+        private UserAccountInfo _userAccountInfo;
+        private PlayerProfileModel _playerProfile;
 
-        public event Action OnAuthorizationSuccessEvent;
+        public bool NewlyCreatedAccount { get; private set; }
+        public string UserUniqueId => _userAccountInfo.Username;
 
         public PlayfabAuthorizationService(UserDataService userDataService)
         {
             _userDataService = userDataService;
         }
 
-        public void Authorize()
+        public async Task Authorize()
+        {
+            LoginResult loginResult = await LoginWithCustomId();
+            _userAccountInfo = loginResult.InfoResultPayload.AccountInfo;
+            _playerProfile = loginResult.InfoResultPayload.PlayerProfile;
+            NewlyCreatedAccount = loginResult.NewlyCreated;
+
+            if (UniqueIdNotSet())
+                await SetupUniqueId();
+            
+            if (IsUsernameChanged())
+                await UpdateUsername();
+        }
+
+        private async Task<LoginResult> LoginWithCustomId()
         {
             var request = new LoginWithCustomIDRequest
             {
@@ -24,36 +40,40 @@ namespace Services.Login
                 CreateAccount = true,
                 InfoRequestParameters = new GetPlayerCombinedInfoRequestParams
                 {
-                    GetPlayerProfile = true
+                    GetPlayerProfile = true,
+                    GetUserAccountInfo = true
                 }
             };
-            PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnPlayfabError);
+
+            return await PlayFabClientAsyncAPI.LoginWithCustomID(request);
         }
 
-        private void OnLoginSuccess(LoginResult result)
+        private async Task<AddUsernamePasswordResult> SetupUniqueId()
         {
-            if (IsUsernameChanged(result))
-                UpdateUsername();
-            else
-                OnAuthorizationSuccessEvent?.Invoke();
+            AddUsernamePasswordRequest request = new()
+            {
+                Username = _userDataService.Id.ToString(),
+                Password = "password" + _userDataService.Id,
+                Email = "email" + _userDataService.Id + "@monkey.fi"
+            };
+
+            return await PlayFabClientAsyncAPI.AddUsernamePassword(request);
         }
 
-        private bool IsUsernameChanged(LoginResult result) => 
-            result.InfoResultPayload.PlayerProfile.DisplayName != _userDataService.Username;
-        
-        private void UpdateUsername()
+        private async Task<UpdateUserTitleDisplayNameResult> UpdateUsername()
         {
             var request = new UpdateUserTitleDisplayNameRequest
             {
                 DisplayName = _userDataService.Username
             };
-            PlayFabClientAPI.UpdateUserTitleDisplayName(request, OnUsernameUpdate, OnPlayfabError);
+
+            return await PlayFabClientAsyncAPI.UpdateUserTitleDisplayName(request);
         }
 
-        private void OnUsernameUpdate(UpdateUserTitleDisplayNameResult result) => 
-            OnAuthorizationSuccessEvent?.Invoke();
+        private bool IsUsernameChanged() =>
+            _playerProfile == null || _playerProfile.DisplayName != _userDataService.Username;
 
-        private void OnPlayfabError(PlayFabError error) => 
-            Debug.LogError("Playfab login error: " + error);
+        private bool UniqueIdNotSet() =>
+            string.IsNullOrEmpty(_userAccountInfo.Username);
     }
 }
