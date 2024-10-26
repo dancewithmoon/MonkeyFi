@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Infrastructure.StaticData.Services;
 using Models;
+using Services.Config;
 using Services.Time;
 using StaticData;
 using UnityEngine;
@@ -12,25 +12,23 @@ namespace Services.UserProgress
     {
         private const string LastEnergyUpdateTimeKey = "LastEnergyUpdateTime";
         
-        private readonly IStaticDataService _staticDataService;
+        private readonly IConfigService _configService;
         private readonly ITimeService _timeService;
         private readonly ClickerModel _clickerModel;
 
-        public PlayerPrefsUserProgressService(IStaticDataService staticDataService, ITimeService timeService, ClickerModel clickerModel)
+        public PlayerPrefsUserProgressService(IConfigService configService, ITimeService timeService, ClickerModel clickerModel)
         {
-            _staticDataService = staticDataService;
+            _configService = configService;
             _timeService = timeService;
             _clickerModel = clickerModel;
         }
 
         public Task LoadProgress()
         {
-            ConfigStaticData config = _staticDataService.GetConfig();
-            
             int clickerPoints = PlayerPrefs.GetInt(ProgressKeys.ClickerPointsKey, 0);
-            int maxEnergy = PlayerPrefs.GetInt(ProgressKeys.MaxEnergyKey, config.DefaultMaxEnergy);
+            int maxEnergy = PlayerPrefs.GetInt(ProgressKeys.MaxEnergyKey, _configService.Config.DefaultMaxEnergy);
             int currentEnergy = PlayerPrefs.GetInt(ProgressKeys.CurrentEnergyKey, maxEnergy);
-            int energyRechargePerSecond = PlayerPrefs.GetInt(ProgressKeys.EnergyRechargePerSecondKey, config.DefaultEnergyRechargePerSecond);
+            int energyRechargePerSecond = PlayerPrefs.GetInt(ProgressKeys.EnergyRechargePerSecondKey, _configService.Config.DefaultEnergyRechargePerSecond);
             
             string rawLastEnergyUpdateTime = PlayerPrefs.GetString(LastEnergyUpdateTimeKey, string.Empty);
             

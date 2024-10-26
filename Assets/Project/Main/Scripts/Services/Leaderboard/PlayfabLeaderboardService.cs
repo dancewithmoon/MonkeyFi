@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Infrastructure.StaticData.Services;
 using Models;
 using PlayFab.ClientModels;
+using Services.Config;
 using UnityEngine;
 using Utils;
 
@@ -13,15 +13,15 @@ namespace Services.Leaderboard
         private const string StatisticName = "Leaderboard";
         
         private readonly ClickerModel _clickerModel;
-        private readonly IStaticDataService _staticDataService;
+        private readonly IConfigService _configService;
         private readonly Dictionary<string, LeaderboardEntryModel> _leaderboard = new();
 
         public List<LeaderboardEntryModel> Leaderboard => _leaderboard.Values.ToList();
 
-        public PlayfabLeaderboardService(ClickerModel clickerModel, IStaticDataService staticDataService)
+        public PlayfabLeaderboardService(ClickerModel clickerModel, IConfigService configService)
         {
             _clickerModel = clickerModel;
-            _staticDataService = staticDataService;
+            _configService = configService;
         }
 
         public async void LoadLeaderboard()
@@ -29,7 +29,7 @@ namespace Services.Leaderboard
             var request = new GetLeaderboardRequest
             {
                 StatisticName = StatisticName,
-                MaxResultsCount = _staticDataService.GetConfig().LeaderboardSize
+                MaxResultsCount = _configService.Config.LeaderboardSize
             };
 
             GetLeaderboardResult result = await PlayFabClientAsyncAPI.GetLeaderboard(request);

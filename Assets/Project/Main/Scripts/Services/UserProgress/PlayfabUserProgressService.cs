@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Infrastructure.StaticData.Services;
 using Models;
 using PlayFab.ClientModels;
+using Services.Config;
 using Services.Time;
-using StaticData;
 using UnityEngine;
 using Utils;
 
@@ -13,7 +12,7 @@ namespace Services.UserProgress
 {
     public class PlayfabUserProgressService : IUserProgressService
     {
-        private readonly IStaticDataService _staticDataService;
+        private readonly IConfigService _configService;
         private readonly ITimeService _timeService;
         private readonly ClickerModel _clickerModel;
         private GetUserDataResult _rawProgress;
@@ -24,9 +23,9 @@ namespace Services.UserProgress
         private int _currentEnergy;
         private int _energyRechargePerSecond;
 
-        public PlayfabUserProgressService(IStaticDataService staticDataService, ITimeService timeService, ClickerModel clickerModel)
+        public PlayfabUserProgressService(IConfigService configService, ITimeService timeService, ClickerModel clickerModel)
         {
-            _staticDataService = staticDataService;
+            _configService = configService;
             _timeService = timeService;
             _clickerModel = clickerModel;
         }
@@ -38,11 +37,10 @@ namespace Services.UserProgress
             Debug.Log("Progress loaded: " + result.ToJson());
             
             _rawProgress = result;
-
-            ConfigStaticData config = _staticDataService.GetConfig();
+            
             _clickerPoints = GetIntegerValue(ProgressKeys.ClickerPointsKey, 0);
-            _maxEnergy = GetIntegerValue(ProgressKeys.MaxEnergyKey, config.DefaultMaxEnergy);
-            _energyRechargePerSecond = GetIntegerValue(ProgressKeys.EnergyRechargePerSecondKey, config.DefaultEnergyRechargePerSecond);
+            _maxEnergy = GetIntegerValue(ProgressKeys.MaxEnergyKey, _configService.Config.DefaultMaxEnergy);
+            _energyRechargePerSecond = GetIntegerValue(ProgressKeys.EnergyRechargePerSecondKey, _configService.Config.DefaultEnergyRechargePerSecond);
             _currentEnergy = GetEnergyValue(_maxEnergy);
             
             _clickerModel.UpdateValues(_clickerPoints, _currentEnergy, _maxEnergy, _energyRechargePerSecond, _lastEnergyUpdateTime);
