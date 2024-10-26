@@ -48,7 +48,7 @@ namespace Infrastructure
             Container.Bind<IMonkeyBusinessFactory>().To<MonkeyBusinessFactory>().AsSingle();
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<StaticDataService>().AsSingle();
-            Container.BindInterfacesTo<LocalConfigService>().AsSingle();
+            Container.BindInterfacesTo<PlayfabConfigService>().AsSingle();
             Container.BindInterfacesTo<WindowService>().AsSingle();
             Container.BindInterfacesTo(GetTelegramServiceImplementation()).AsSingle();
             Container.Bind<IReferralService>().To<PlayfabReferralService>().AsSingle();
