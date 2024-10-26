@@ -55,7 +55,7 @@ namespace Infrastructure
             Container.Bind<UserDataService>().AsSingle();
             Container.Bind<IAuthorizationService>().To<PlayfabAuthorizationService>().AsSingle();
             Container.Bind<IUserProgressService>().To<PlayfabUserProgressService>().AsSingle();
-            Container.Bind<ILeaderboardService>().To<PlayfabLeaderboardService>().AsSingle();
+            Container.BindInterfacesTo<PlayfabLeaderboardService>().AsSingle();
         }
 
         private void BindStates()
