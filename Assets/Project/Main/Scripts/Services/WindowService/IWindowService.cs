@@ -12,5 +12,7 @@ namespace Services
         void HideWindow(WindowType windowType);
         void ClearWindows();
         void ClearHistory();
+        void ShowModalWindow(WindowType windowType);
+        void ShowModalWindow<TPayload>(WindowType windowType, TPayload payload);
     }
 }
