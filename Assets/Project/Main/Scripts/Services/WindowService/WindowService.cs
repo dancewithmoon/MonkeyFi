@@ -55,6 +55,23 @@ namespace Services
             }
         }
 
+        public void ShowModalWindow(WindowType windowType)
+        {
+            if (TryShowModalWindow(windowType))
+                _windows[windowType].DrawWindow();
+        }
+
+        public void ShowModalWindow<TPayload>(WindowType windowType, TPayload payload)
+        {
+            if (TryShowModalWindow(windowType))
+            {
+                if (_windows[windowType] is PayloadedWindow<TPayload> payloadedWindow)
+                    payloadedWindow.SetPayload(payload);
+
+                _windows[windowType].DrawWindow();
+            }
+        }
+        
         public void HideWindow(WindowType windowType)
         {
             if(windowType == WindowType.None)
@@ -90,6 +107,21 @@ namespace Services
             AddCurrentWindowToHistory();
             Hud.SetBackButtonActive(HistoryLength > 1);
 
+            return true;
+        }
+        
+        private bool TryShowModalWindow(WindowType windowType)
+        {
+            if (windowType == WindowType.None)
+                return false;
+
+            if (_windows.ContainsKey(windowType))
+                _windows[windowType].Visible = true;
+            else
+                _windows[windowType] = _gameFactory.CreateWindow(windowType);
+            
+            _windows[windowType].transform.SetAsLastSibling();
+            
             return true;
         }
 

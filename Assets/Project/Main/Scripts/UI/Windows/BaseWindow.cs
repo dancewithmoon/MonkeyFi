@@ -40,5 +40,7 @@ namespace UI.Windows
         {
             
         }
+
+        protected void Close() => Visible = false;
     }
 }
