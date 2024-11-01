@@ -21,3 +21,6 @@ MonoBehaviour:
     the link!
   _shareUrl: t.me/hellfapper_bot/game?startapp=
   _tonManifestUrl: https://api.npoint.io/166f3dbec4d78fe27ded
+  _supportedWallets:
+  - telegram-wallet
+  - tonkeeper

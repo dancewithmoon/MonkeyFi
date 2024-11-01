@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Infrastructure.States;
+using Newtonsoft.Json;
 using PlayFab.ClientModels;
 using Utils;
 
@@ -26,9 +27,10 @@ namespace Services.Config
             string shareMessage = rawConfig[nameof(Config.ShareMessage)];
             string shareUrl = rawConfig[nameof(Config.ShareUrl)];
             string tonManifestUrl = rawConfig[nameof(Config.TonManifestUrl)];
+            List<string> supportedWallets = JsonConvert.DeserializeObject<List<string>>(rawConfig[nameof(Config.SupportedWallets)]);
             
             return new ConfigData(defaultMaxEnergy, defaultEnergyRechargePerSecond, saveFrequencyInSeconds,
-                statisticsUpdateFrequencyInSeconds, leaderboardSize, shareMessage, shareUrl, tonManifestUrl);
+                statisticsUpdateFrequencyInSeconds, leaderboardSize, shareMessage, shareUrl, tonManifestUrl, supportedWallets);
         }
     }
 }

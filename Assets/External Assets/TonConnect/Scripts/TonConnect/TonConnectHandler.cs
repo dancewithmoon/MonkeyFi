@@ -44,7 +44,7 @@ public class TonConnectHandler : MonoBehaviour
         StartCoroutine(LoadWallets(url, callback));
     }
 
-    private void Start()
+    public void Initialize()
     {
         CheckHandlerSettings();
         CreateTonConnectInstance();

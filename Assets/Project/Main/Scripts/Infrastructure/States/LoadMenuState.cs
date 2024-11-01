@@ -54,10 +54,10 @@ namespace Infrastructure.States
         private async void OnLoaded()
         {
             await _preload;
+            await _tonWalletService.Initialize();
             _gameFactory.CreateUIRoot();
             ShowHudOverlay();
             _windowService.ShowWindow(WindowType.Games);
-            _tonWalletService.Initialize();
             StateMachine.Enter<MenuState>();
         }
 
