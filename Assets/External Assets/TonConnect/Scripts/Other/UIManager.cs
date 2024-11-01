@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using TonSdk.Connect;
 using TonSdk.Core;
 using UnityEngine;
@@ -11,7 +10,6 @@ using Message = TonSdk.Connect.Message;
 
 public class UIManager : MonoBehaviour
 {
-    public TMP_Text text;
     [Tooltip("Toggle if you want to use presaved wallet icons. (recommended)")]
     public bool UseSavedWalletIcons = true;
     [Tooltip("Wallet icons. Works only if UseSavedWalletIcons is enabled.")]
@@ -82,7 +80,6 @@ public class UIManager : MonoBehaviour
         document.rootVisualElement.Q<Label>("ModalQRContent_OpenWalletButton_Title").text = $"Open {config.Name}";
 
         string connectUrl = await tonConnectHandler.tonConnect.Connect(config);
-        text.text = connectUrl; //TODO: REMOVE
         Texture2D qrCodeTexture = QRGenerator.EncodeString(connectUrl.ToString());
 
         document.rootVisualElement.Q<VisualElement>("ModalQRContent_QRHandler").style.backgroundImage = new StyleBackground(qrCodeTexture);
