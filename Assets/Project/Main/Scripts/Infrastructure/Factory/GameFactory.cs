@@ -58,28 +58,23 @@ namespace Infrastructure.Factory
             return hud;
         }
 
-        public async Task<LeaderboardItem> CreateLeaderboardItem(LeaderboardEntryModel model, Transform parent)
+        public async Task<LeaderboardItem> CreateLeaderboardItem(LeaderboardEntryModel model, Transform parent) => 
+            await CreateItem<LeaderboardItem, LeaderboardEntryModel>(LeaderboardItemPath, model, parent);
+
+        public async Task<FriendItem> CreateFriendItem(ReferralModel model, Transform parent) => 
+            await CreateItem<FriendItem, ReferralModel>(FriendItemPath, model, parent);
+
+        public async Task<WalletItem> CreateWalletItem(WalletModel model, Transform parent) => 
+            await CreateItem<WalletItem, WalletModel>(WalletItemPath, model, parent);
+
+        private async Task<TItem> CreateItem<TItem, TModel>(string prefabPath, TModel model, Transform parent) 
+            where TItem : BaseItem<TModel> 
+            where TModel : class
         {
-            GameObject leaderboardObject = await InstantiateRegistered(LeaderboardItemPath, parent);
-            var leaderboardItem = leaderboardObject.GetComponent<LeaderboardItem>();
-            leaderboardItem.Initialize(model);
-            return leaderboardItem;
-        }
-        
-        public async Task<FriendItem> CreateFriendItem(ReferralModel model, Transform parent)
-        {
-            GameObject friendObject = await InstantiateRegistered(FriendItemPath, parent);
-            var friendItem = friendObject.GetComponent<FriendItem>();
-            friendItem.Initialize(model);
-            return friendItem;
-        }
-        
-        public async Task<WalletItem> CreateWalletItem(WalletModel model, Transform parent)
-        {
-            GameObject walletObject = await InstantiateRegistered(WalletItemPath, parent);
-            var walletItem = walletObject.GetComponent<WalletItem>();
-            walletItem.Initialize(model);
-            return walletItem;
+            GameObject itemObject = await InstantiateRegistered(prefabPath, parent);
+            var item = itemObject.GetComponent<TItem>();
+            item.Initialize(model);
+            return item;
         }
     }
 }

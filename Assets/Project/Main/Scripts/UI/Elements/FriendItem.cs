@@ -4,19 +4,13 @@ using UnityEngine;
 
 namespace UI.Elements
 {
-    public class FriendItem : MonoBehaviour
+    public class FriendItem : BaseItem<ReferralModel>
     {
         [SerializeField] private TMP_Text _nameText;
-        private ReferralModel _model;
-        
-        public void Initialize(ReferralModel model)
-        {
-            _model = model;
-        }
 
-        public void Draw()
+        public override void Draw()
         {
-            _nameText.text = _model.Name;
+            _nameText.text = Model.Name;
         }
     }
 }
