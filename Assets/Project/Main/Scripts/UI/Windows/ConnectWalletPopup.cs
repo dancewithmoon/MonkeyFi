@@ -25,16 +25,36 @@ namespace UI.Windows
             _gameFactory = gameFactory;
         }
 
-        protected override void OnWindowShow() => 
-            _closeButton.onClick.AddListener(Close);
-
-        protected override void OnWindowHide() => 
-            _closeButton.onClick.RemoveListener(Close);
-
         public override void DrawWindow()
         {
             foreach (WalletModel walletModel in _tonWalletService.Wallets.Values)
+            {
                 DrawWalletItem(walletModel);
+            }
+        }
+
+        protected override void OnWindowShow()
+        {
+            _closeButton.onClick.AddListener(Close);
+            foreach ((WalletModel _, WalletItem item) in _wallets)
+            {
+                item.OnClickEvent += OnWalletSelected;
+            }
+        }
+
+        protected override void OnWindowHide()
+        {
+            _closeButton.onClick.RemoveListener(Close);
+            foreach ((WalletModel _, WalletItem item) in _wallets)
+            {
+                item.OnClickEvent -= OnWalletSelected;
+            }
+        }
+
+        private void OnWalletSelected(WalletModel walletModel)
+        {
+            _tonWalletService.ConnectWallet(walletModel);
+            Close();
         }
 
         private async void DrawWalletItem(WalletModel walletModel)

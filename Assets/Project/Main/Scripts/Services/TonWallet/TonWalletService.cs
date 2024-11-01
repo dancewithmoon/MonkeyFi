@@ -23,6 +23,9 @@ namespace Services.TonWallet
         public Dictionary<string, WalletModel> Wallets { get; private set; }
 
         public bool IsConnected => _tonConnectHandler.tonConnect.IsConnected;
+        public string WalletAddress => _tonConnectHandler.tonConnect.Wallet.Account.Address?.ToString();
+
+        public event Action OnWalletConnectedEvent;
         
         public TonWalletService(IConfigProvider configProvider, ICoroutineRunner coroutineRunner)
         {
@@ -40,9 +43,18 @@ namespace Services.TonWallet
             await LoadWallets();
         }
 
-        public void ConnectWallet() { }
+        public async void ConnectWallet(WalletModel walletModel)
+        {
+            string url = await _tonConnectHandler.tonConnect.Connect(_walletConfigs[walletModel.AppName]);
+            string escapedUrl = Uri.EscapeUriString(url);
+            Application.OpenURL(escapedUrl);
+        }
 
-        private void OnProviderStatusChange(Wallet wallet) { }
+        private void OnProviderStatusChange(Wallet wallet)
+        {
+            if (IsConnected)
+                OnWalletConnectedEvent?.Invoke();
+        }
 
         private void OnProviderStatusChangeError(string error) { }
         
