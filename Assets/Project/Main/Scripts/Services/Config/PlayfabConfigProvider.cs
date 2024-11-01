@@ -25,9 +25,10 @@ namespace Services.Config
             int leaderboardSize = int.Parse(rawConfig[nameof(Config.LeaderboardSize)]);
             string shareMessage = rawConfig[nameof(Config.ShareMessage)];
             string shareUrl = rawConfig[nameof(Config.ShareUrl)];
+            string tonManifestUrl = rawConfig[nameof(Config.TonManifestUrl)];
             
             return new ConfigData(defaultMaxEnergy, defaultEnergyRechargePerSecond, saveFrequencyInSeconds,
-                statisticsUpdateFrequencyInSeconds, leaderboardSize, shareMessage, shareUrl);
+                statisticsUpdateFrequencyInSeconds, leaderboardSize, shareMessage, shareUrl, tonManifestUrl);
         }
     }
 }

@@ -14,6 +14,9 @@ namespace StaticData
         [Header("Share")]
         [SerializeField] [TextArea] private string _shareMessage;
         [SerializeField] private string _shareUrl;
+
+        [Header("TON")]
+        [SerializeField] private string _tonManifestUrl;
         
         public int DefaultMaxEnergy => _defaultMaxEnergy;
         public int DefaultEnergyRechargePerSecond => _defaultEnergyRechargePerSecond;
@@ -23,5 +26,7 @@ namespace StaticData
         
         public string ShareMessage => _shareMessage;
         public string ShareUrl => _shareUrl;
+        
+        public string TonManifestUrl => _tonManifestUrl;
     }
 }
