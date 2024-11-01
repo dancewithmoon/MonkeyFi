@@ -4,6 +4,7 @@ using Base.Instantiating;
 using Infrastructure.StaticData.Services;
 using Services.Leaderboard;
 using Services.Referral;
+using Services.TonWallet;
 using UI;
 using UI.Elements;
 using UI.Windows;
@@ -17,6 +18,7 @@ namespace Infrastructure.Factory
         private const string HudOverlayPath = "UI/HUDOverlay";
         private const string LeaderboardItemPath = "UI/Elements/LeaderboardItem";
         private const string FriendItemPath = "UI/Elements/FriendItem";
+        private const string WalletItemPath = "UI/Elements/WalletItem";
 
         private readonly IStaticDataService _staticDataService;
         private Transform _uiRoot;
@@ -70,6 +72,14 @@ namespace Infrastructure.Factory
             var friendItem = friendObject.GetComponent<FriendItem>();
             friendItem.Initialize(model);
             return friendItem;
+        }
+        
+        public async Task<WalletItem> CreateWalletItem(WalletModel model, Transform parent)
+        {
+            GameObject walletObject = await InstantiateRegistered(WalletItemPath, parent);
+            var walletItem = walletObject.GetComponent<WalletItem>();
+            walletItem.Initialize(model);
+            return walletItem;
         }
     }
 }
