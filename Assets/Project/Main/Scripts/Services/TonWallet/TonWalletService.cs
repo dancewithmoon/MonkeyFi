@@ -25,7 +25,7 @@ namespace Services.TonWallet
         public bool IsConnected => _tonConnectHandler.tonConnect.IsConnected;
         public string WalletAddress => _tonConnectHandler.tonConnect.Wallet.Account.Address?.ToString();
 
-        public event Action OnWalletConnectedEvent;
+        public event Action OnWalletUpdateEvent;
         
         public TonWalletService(IConfigProvider configProvider, ICoroutineRunner coroutineRunner)
         {
@@ -50,11 +50,14 @@ namespace Services.TonWallet
             Application.OpenURL(escapedUrl);
         }
 
-        private void OnProviderStatusChange(Wallet wallet)
+        public async void DisconnectWallet()
         {
-            if (IsConnected)
-                OnWalletConnectedEvent?.Invoke();
+            _tonConnectHandler.RestoreConnectionOnAwake = false;
+            await _tonConnectHandler.tonConnect.Disconnect();
         }
+
+        private void OnProviderStatusChange(Wallet wallet) => 
+            OnWalletUpdateEvent?.Invoke();
 
         private void OnProviderStatusChangeError(string error) { }
         
