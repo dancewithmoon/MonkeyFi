@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace StaticData
 {
@@ -18,7 +17,6 @@ namespace StaticData
 
         [Header("TON")]
         [SerializeField] private string _tonManifestUrl;
-        [SerializeField] private List<string> _supportedWallets;
         
         public int DefaultMaxEnergy => _defaultMaxEnergy;
         public int DefaultEnergyRechargePerSecond => _defaultEnergyRechargePerSecond;
@@ -30,6 +28,5 @@ namespace StaticData
         public string ShareUrl => _shareUrl;
         
         public string TonManifestUrl => _tonManifestUrl;
-        public List<string> SupportedWallets => new(_supportedWallets);
     }
 }

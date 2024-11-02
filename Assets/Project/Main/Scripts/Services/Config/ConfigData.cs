@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Services.Config
+﻿namespace Services.Config
 {
     public class ConfigData
     {
@@ -12,11 +10,9 @@ namespace Services.Config
         public string ShareMessage { get; }
         public string ShareUrl { get; }
         public string TonManifestUrl { get; }
-        public List<string> SupportedWallets { get; }
 
         public ConfigData(int defaultMaxEnergy, int defaultEnergyRechargePerSecond, int saveFrequencyInSeconds,
-            int statisticsUpdateFrequencyInSeconds, int leaderboardSize, string shareMessage, string shareUrl, string tonManifestUrl,
-            List<string> supportedWallets)
+            int statisticsUpdateFrequencyInSeconds, int leaderboardSize, string shareMessage, string shareUrl, string tonManifestUrl)
         {
             DefaultMaxEnergy = defaultMaxEnergy;
             DefaultEnergyRechargePerSecond = defaultEnergyRechargePerSecond;
@@ -26,7 +22,6 @@ namespace Services.Config
             ShareMessage = shareMessage;
             ShareUrl = shareUrl;
             TonManifestUrl = tonManifestUrl;
-            SupportedWallets = supportedWallets;
         }
     }
 }
