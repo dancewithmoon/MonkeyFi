@@ -6,7 +6,9 @@ using Cysharp.Threading.Tasks;
 using Infrastructure.StaticData.Services;
 using Services.Config;
 using TonSdk.Connect;
+using TonSdk.Core;
 using UnityEngine;
+using Utils;
 using Object = UnityEngine.Object;
 
 namespace Services.TonWallet
@@ -20,11 +22,22 @@ namespace Services.TonWallet
 
         private TonConnectHandler _tonConnectHandler;
         private Dictionary<string, WalletConfig> _walletConfigs;
+        private KeyValuePair<Address, string> _userFriendlyWalletAddress;
         
         public Dictionary<string, WalletModel> Wallets { get; private set; }
 
         public bool IsConnected => _tonConnectHandler.tonConnect.IsConnected;
-        public string WalletAddress => _tonConnectHandler.tonConnect.Wallet.Account.Address?.ToString();
+        public string WalletAddress
+        {
+            get
+            {
+                Address address = _tonConnectHandler.tonConnect.Wallet.Account.Address;
+                if (_userFriendlyWalletAddress.Key != address)
+                    _userFriendlyWalletAddress = new KeyValuePair<Address, string>(address, address.ToUserFriendlyAddress());
+                
+                return _userFriendlyWalletAddress.Value;
+            }
+        }
 
         public event Action OnWalletUpdateEvent;
         
