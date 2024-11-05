@@ -2,10 +2,10 @@
 {
     public class TelegramUserData
     {
-        public int Id { get; }
+        public long Id { get; }
         public string Username { get; }
 
-        public TelegramUserData(int id, string username)
+        public TelegramUserData(long id, string username)
         {
             Id = id;
             Username = username;
