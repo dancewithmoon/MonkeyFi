@@ -27,7 +27,7 @@ namespace Services.Config
             Config = new ConfigData(staticData.DefaultMaxEnergy, staticData.DefaultEnergyRechargePerSecond,
                 staticData.SaveFrequencyInSeconds, staticData.StatisticsUpdateFrequencyInSeconds,
                 staticData.LeaderboardSize, staticData.ShareMessage, staticData.ShareUrl,
-                staticData.TonManifestUrl);
+                staticData.TonManifestUrl, staticData.WalletAddress, staticData.CheckInCost, staticData.BotName);
         }
     }
 }

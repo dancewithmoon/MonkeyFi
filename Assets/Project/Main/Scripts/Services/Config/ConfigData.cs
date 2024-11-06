@@ -10,9 +10,13 @@
         public string ShareMessage { get; }
         public string ShareUrl { get; }
         public string TonManifestUrl { get; }
+        public string WalletAddress { get; }
+        public float CheckInCost { get; }
+        public string BotName { get; }
 
         public ConfigData(int defaultMaxEnergy, int defaultEnergyRechargePerSecond, int saveFrequencyInSeconds,
-            int statisticsUpdateFrequencyInSeconds, int leaderboardSize, string shareMessage, string shareUrl, string tonManifestUrl)
+            int statisticsUpdateFrequencyInSeconds, int leaderboardSize, string shareMessage, string shareUrl,
+            string tonManifestUrl, string walletAddress, float checkInCost, string botName)
         {
             DefaultMaxEnergy = defaultMaxEnergy;
             DefaultEnergyRechargePerSecond = defaultEnergyRechargePerSecond;
@@ -22,6 +26,9 @@
             ShareMessage = shareMessage;
             ShareUrl = shareUrl;
             TonManifestUrl = tonManifestUrl;
+            WalletAddress = walletAddress;
+            CheckInCost = checkInCost;
+            BotName = botName;
         }
     }
 }

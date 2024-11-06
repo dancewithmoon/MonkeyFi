@@ -16,6 +16,8 @@ namespace Services.TonWallet
     public class TonWalletService
     {
         private const string WalletsListUrl = "https://raw.githubusercontent.com/ton-blockchain/wallets-list/main/wallets-v2.json";
+        private const string TelegramWalletAppName = "telegram-wallet";
+        
         private readonly IConfigProvider _configProvider;
         private readonly ICoroutineRunner _coroutineRunner;
         private readonly IStaticDataService _staticData;
@@ -27,6 +29,7 @@ namespace Services.TonWallet
         public Dictionary<string, WalletModel> Wallets { get; private set; }
 
         public bool IsConnected => _tonConnectHandler.tonConnect.IsConnected;
+        
         public string WalletAddress
         {
             get
@@ -71,6 +74,38 @@ namespace Services.TonWallet
             await _tonConnectHandler.tonConnect.Disconnect();
         }
 
+        public async void SendTransaction()
+        {
+            string currentWalletName = _tonConnectHandler.tonConnect.Wallet.Device.AppName;
+            if (string.IsNullOrEmpty(currentWalletName))
+            {
+                Debug.LogError("Wallet not set");
+                return;
+            }
+            
+            Address receiver = new(_configProvider.Config.WalletAddress);
+            Coins amount = new(_configProvider.Config.CheckInCost);
+            Message[] sendTons = { new Message(receiver, amount) };
+
+            long validUntil = DateTimeOffset.Now.ToUnixTimeSeconds() + 600;
+
+            var transactionRequest = new SendTransactionRequest(sendTons, validUntil);
+            Task<SendTransactionResult?> transactionTask = _tonConnectHandler.tonConnect.SendTransaction(transactionRequest);
+            Application.OpenURL(GetWalletUrl(currentWalletName));
+
+            SendTransactionResult? result = await transactionTask;
+            Debug.Log("Transaction sent: " + result);
+        }
+
+        private string GetWalletUrl(string currentWalletName)
+        {
+            string url = _walletConfigs[currentWalletName.ToLowerInvariant()].UniversalUrl;
+            if (currentWalletName == TelegramWalletAppName)
+                url = url.Replace("wallet?", $"{_configProvider.Config.BotName}?");
+
+            return url;
+        }
+
         private void OnProviderStatusChange(Wallet wallet) => 
             OnWalletUpdateEvent?.Invoke();
 
@@ -80,6 +115,7 @@ namespace Services.TonWallet
         {
             _tonConnectHandler.ManifestURL = _configProvider.Config.TonManifestUrl;
             _tonConnectHandler.UseWebWallets = true;
+            _tonConnectHandler.RestoreConnectionOnAwake = false;
             _tonConnectHandler.Initialize();
         }
 

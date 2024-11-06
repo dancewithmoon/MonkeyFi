@@ -12,6 +12,7 @@ namespace UI.Windows
         [SerializeField] private Button _connectWalletButton;
         [SerializeField] private TMP_Text _connectWalletText;
         [SerializeField] private Button _disconnectWalletButton;
+        [SerializeField] private Button _sendTransactionButton;
 
         private IWindowService _windowService;
         private TonWalletService _tonWalletService;
@@ -27,18 +28,23 @@ namespace UI.Windows
         {
             _connectWalletButton.onClick.AddListener(ConnectWallet);
             _disconnectWalletButton.onClick.AddListener(DisconnectWallet);
+            _sendTransactionButton.onClick.AddListener(SendTransaction);
             _tonWalletService.OnWalletUpdateEvent += DrawWindow;
         }
-
+        
         protected override void OnWindowHide()
         {
             _connectWalletButton.onClick.RemoveListener(ConnectWallet);
             _disconnectWalletButton.onClick.RemoveListener(DisconnectWallet);
+            _sendTransactionButton.onClick.RemoveListener(SendTransaction);
             _tonWalletService.OnWalletUpdateEvent -= DrawWindow;
         }
 
-        public override void DrawWindow() => 
+        public override void DrawWindow()
+        {
             DrawConnectWalletButton();
+            DrawSendTransactionButton();
+        }
 
         private void DrawConnectWalletButton()
         {
@@ -47,10 +53,16 @@ namespace UI.Windows
             _disconnectWalletButton.gameObject.SetActive(_tonWalletService.IsConnected);
         }
 
+        private void DrawSendTransactionButton() => 
+            _sendTransactionButton.interactable = _tonWalletService.IsConnected;
+
         private void ConnectWallet() => 
             _windowService.ShowModalWindow(WindowType.ConnectWallet);
 
         private void DisconnectWallet() => 
             _tonWalletService.DisconnectWallet();
+        
+        private void SendTransaction() => 
+            _tonWalletService.SendTransaction();
     }
 }
