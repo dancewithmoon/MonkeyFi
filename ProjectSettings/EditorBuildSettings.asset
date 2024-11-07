@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Project/Main/Scenes/MonkeyBusiness.unity
     guid: 381c7d0ecc4a3d34b9a93db82100c0e6
+  - enabled: 0
+    path: Assets/External Assets/TonConnect/Scenes/TonSDK.Connect.Example.unity
+    guid: 25bc396b51006164bbdca2ebbeb65810
   m_configObjects: {}

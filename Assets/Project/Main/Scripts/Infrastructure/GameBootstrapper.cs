@@ -13,6 +13,7 @@ using Services.Login;
 using Services.Referral;
 using Services.Telegram;
 using Services.Time;
+using Services.TonWallet;
 using Services.UserProgress;
 using UnityEngine;
 using Zenject;
@@ -56,6 +57,7 @@ namespace Infrastructure
             Container.Bind<IAuthorizationService>().To<PlayfabAuthorizationService>().AsSingle();
             Container.Bind<IUserProgressService>().To<PlayfabUserProgressService>().AsSingle();
             Container.BindInterfacesTo<PlayfabLeaderboardService>().AsSingle();
+            Container.Bind<TonWalletService>().AsSingle();
         }
 
         private void BindStates()

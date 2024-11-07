@@ -4,6 +4,7 @@ using Base.Instantiating;
 using Infrastructure.StaticData.Services;
 using Services.Leaderboard;
 using Services.Referral;
+using Services.TonWallet;
 using UI;
 using UI.Elements;
 using UI.Windows;
@@ -17,6 +18,7 @@ namespace Infrastructure.Factory
         private const string HudOverlayPath = "UI/HUDOverlay";
         private const string LeaderboardItemPath = "UI/Elements/LeaderboardItem";
         private const string FriendItemPath = "UI/Elements/FriendItem";
+        private const string WalletItemPath = "UI/Elements/WalletItem";
 
         private readonly IStaticDataService _staticDataService;
         private Transform _uiRoot;
@@ -56,20 +58,23 @@ namespace Infrastructure.Factory
             return hud;
         }
 
-        public async Task<LeaderboardItem> CreateLeaderboardItem(LeaderboardEntryModel model, Transform parent)
+        public async Task<LeaderboardItem> CreateLeaderboardItem(LeaderboardEntryModel model, Transform parent) => 
+            await CreateItem<LeaderboardItem, LeaderboardEntryModel>(LeaderboardItemPath, model, parent);
+
+        public async Task<FriendItem> CreateFriendItem(ReferralModel model, Transform parent) => 
+            await CreateItem<FriendItem, ReferralModel>(FriendItemPath, model, parent);
+
+        public async Task<WalletItem> CreateWalletItem(WalletModel model, Transform parent) => 
+            await CreateItem<WalletItem, WalletModel>(WalletItemPath, model, parent);
+
+        private async Task<TItem> CreateItem<TItem, TModel>(string prefabPath, TModel model, Transform parent) 
+            where TItem : BaseItem<TModel> 
+            where TModel : class
         {
-            GameObject leaderboardObject = await InstantiateRegistered(LeaderboardItemPath, parent);
-            var leaderboardItem = leaderboardObject.GetComponent<LeaderboardItem>();
-            leaderboardItem.Initialize(model);
-            return leaderboardItem;
-        }
-        
-        public async Task<FriendItem> CreateFriendItem(ReferralModel model, Transform parent)
-        {
-            GameObject friendObject = await InstantiateRegistered(FriendItemPath, parent);
-            var friendItem = friendObject.GetComponent<FriendItem>();
-            friendItem.Initialize(model);
-            return friendItem;
+            GameObject itemObject = await InstantiateRegistered(prefabPath, parent);
+            var item = itemObject.GetComponent<TItem>();
+            item.Initialize(model);
+            return item;
         }
     }
 }

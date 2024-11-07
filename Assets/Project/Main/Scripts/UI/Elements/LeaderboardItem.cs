@@ -4,22 +4,15 @@ using UnityEngine;
 
 namespace UI.Elements
 {
-    public class LeaderboardItem : MonoBehaviour
+    public class LeaderboardItem : BaseItem<LeaderboardEntryModel>
     {
         [SerializeField] private TMP_Text _name;
         [SerializeField] private TMP_Text _score;
-        
-        private LeaderboardEntryModel _model;
 
-        public void Initialize(LeaderboardEntryModel model)
+        public override void Draw()
         {
-            _model = model;
-        }
-
-        public void Draw()
-        {
-            _name.text = _model.Name;
-            _score.text = _model.Score.ToString();
+            _name.text = Model.Name;
+            _score.text = Model.Score.ToString();
         }
     }
 }

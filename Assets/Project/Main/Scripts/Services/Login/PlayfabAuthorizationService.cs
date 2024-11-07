@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using PlayFab.ClientModels;
+using UnityEngine;
 using Utils;
 
 namespace Services.Login
@@ -27,9 +29,9 @@ namespace Services.Login
 
             if (UniqueIdNotSet())
                 await SetupUniqueId();
-            
+
             if (IsUsernameChanged())
-                await UpdateUsername();
+                await TryUpdateUsername();
         }
 
         private async Task<LoginResult> LoginWithCustomId()
@@ -58,6 +60,18 @@ namespace Services.Login
             };
 
             return await PlayFabClientAsyncAPI.AddUsernamePassword(request);
+        }
+        
+        private async Task TryUpdateUsername()
+        {
+            try
+            {
+                await UpdateUsername();
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError("Failed to update username. Error: " + exception.Message);
+            }
         }
 
         private async Task<UpdateUserTitleDisplayNameResult> UpdateUsername()
