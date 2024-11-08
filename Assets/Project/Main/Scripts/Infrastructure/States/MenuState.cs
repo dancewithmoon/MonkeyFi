@@ -3,8 +3,8 @@ using Base.Services.CoroutineRunner;
 using Base.States;
 using Models;
 using Services;
-using Services.Config;
 using Services.Leaderboard;
+using Services.Library.Config;
 using Services.UserProgress;
 using UnityEngine;
 

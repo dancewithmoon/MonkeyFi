@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models;
 using PlayFab.ClientModels;
-using Services.Config;
+using Services.Library.Config;
 using Services.Time;
 using UnityEngine;
 using Utils;

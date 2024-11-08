@@ -1,4 +1,4 @@
-﻿namespace Services.Config
+﻿namespace Services.Library.Config
 {
     public class ConfigData
     {

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Base.States;
 using Models;
 using PlayFab.ClientModels;
-using Services.Config;
+using Services.Library.Config;
 using UnityEngine;
 using Utils;
 

@@ -7,8 +7,8 @@ using Infrastructure.StaticData.Services;
 using Models;
 using MonkeyBusiness.Infrastructure.Factory;
 using Services;
-using Services.Config;
 using Services.Leaderboard;
+using Services.Library;
 using Services.Login;
 using Services.Referral;
 using Services.Telegram;
@@ -49,7 +49,7 @@ namespace Infrastructure
             Container.Bind<IMonkeyBusinessFactory>().To<MonkeyBusinessFactory>().AsSingle();
             Container.BindInterfacesTo<GameFactory>().AsSingle();
             Container.BindInterfacesTo<StaticDataService>().AsSingle();
-            Container.BindInterfacesTo<PlayfabConfigProvider>().AsSingle();
+            Container.BindInterfacesTo<PlayfabLibraryProvider>().AsSingle();
             Container.BindInterfacesTo<WindowService>().AsSingle();
             Container.BindInterfacesTo(GetTelegramServiceImplementation()).AsSingle();
             Container.Bind<IReferralService>().To<PlayfabReferralService>().AsSingle();

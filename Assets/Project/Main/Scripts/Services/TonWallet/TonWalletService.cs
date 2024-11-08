@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Base.Services.CoroutineRunner;
 using Cysharp.Threading.Tasks;
 using Infrastructure.StaticData.Services;
-using Services.Config;
+using Services.Library.Config;
 using TonSdk.Connect;
 using TonSdk.Core;
 using UnityEngine;

@@ -3,7 +3,7 @@ using Base.AssetManagement;
 using Base.States;
 using StaticData;
 
-namespace Services.Config
+namespace Services.Library.Config
 {
     public class LocalConfigProvider : IConfigProvider, IPreloadedInBootstrap
     {
