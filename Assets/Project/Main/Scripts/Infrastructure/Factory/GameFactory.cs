@@ -4,6 +4,7 @@ using Base.Instantiating;
 using Infrastructure.StaticData.Services;
 using Services.Leaderboard;
 using Services.Quests;
+using Services.Quests.Conditions;
 using Services.Referral;
 using Services.TonWallet;
 using UI;
@@ -22,6 +23,7 @@ namespace Infrastructure.Factory
         private const string FriendItemPath = "UI/Elements/FriendItem";
         private const string WalletItemPath = "UI/Elements/WalletItem";
         private const string QuestItemPath = "UI/Elements/QuestItem";
+        private const string ConditionItemPath = "UI/Elements/ConditionItem";
 
         private readonly IStaticDataService _staticDataService;
         private Transform _uiRoot;
@@ -72,6 +74,9 @@ namespace Infrastructure.Factory
 
         public async Task<QuestItem> CreateQuestItem(QuestModel model, Transform parent) => 
             await CreateItem<QuestItem, QuestModel>(QuestItemPath, model, parent);
+        
+        public async Task<ConditionItem> CreateConditionItem(ConditionModel model, Transform parent) => 
+            await CreateItem<ConditionItem, ConditionModel>(ConditionItemPath, model, parent);
 
         private async Task<TItem> CreateItem<TItem, TModel>(string prefabPath, TModel model, Transform parent) 
             where TItem : BaseItem<TModel> 
