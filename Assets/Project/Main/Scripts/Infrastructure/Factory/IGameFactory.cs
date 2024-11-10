@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Services.Leaderboard;
+using Services.Quests;
 using Services.Referral;
 using Services.TonWallet;
 using UI;
@@ -17,5 +18,6 @@ namespace Infrastructure.Factory
         Task<LeaderboardItem> CreateLeaderboardItem(LeaderboardEntryModel model, Transform parent);
         Task<FriendItem> CreateFriendItem(ReferralModel model, Transform parent);
         Task<WalletItem> CreateWalletItem(WalletModel model, Transform parent);
+        Task<QuestItem> CreateQuestItem(QuestModel model, Transform parent);
     }
 }

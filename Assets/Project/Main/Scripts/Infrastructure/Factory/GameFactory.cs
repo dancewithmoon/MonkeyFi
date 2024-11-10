@@ -3,12 +3,14 @@ using Base.AssetManagement;
 using Base.Instantiating;
 using Infrastructure.StaticData.Services;
 using Services.Leaderboard;
+using Services.Quests;
 using Services.Referral;
 using Services.TonWallet;
 using UI;
 using UI.Elements;
 using UI.Windows;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Infrastructure.Factory
 {
@@ -19,6 +21,7 @@ namespace Infrastructure.Factory
         private const string LeaderboardItemPath = "UI/Elements/LeaderboardItem";
         private const string FriendItemPath = "UI/Elements/FriendItem";
         private const string WalletItemPath = "UI/Elements/WalletItem";
+        private const string QuestItemPath = "UI/Elements/QuestItem";
 
         private readonly IStaticDataService _staticDataService;
         private Transform _uiRoot;
@@ -66,6 +69,9 @@ namespace Infrastructure.Factory
 
         public async Task<WalletItem> CreateWalletItem(WalletModel model, Transform parent) => 
             await CreateItem<WalletItem, WalletModel>(WalletItemPath, model, parent);
+
+        public async Task<QuestItem> CreateQuestItem(QuestModel model, Transform parent) => 
+            await CreateItem<QuestItem, QuestModel>(QuestItemPath, model, parent);
 
         private async Task<TItem> CreateItem<TItem, TModel>(string prefabPath, TModel model, Transform parent) 
             where TItem : BaseItem<TModel> 
