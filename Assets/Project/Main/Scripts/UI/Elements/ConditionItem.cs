@@ -9,18 +9,29 @@ namespace UI.Elements
     {
         [SerializeField] private TMP_Text _conditionText;
         [SerializeField] private Button _completeButton;
+        [SerializeField] private Image _checkmark;
 
         public override void Draw()
         {
             _conditionText.text = Model.Data.Name;
+            _completeButton.gameObject.SetActive(!Model.Completed);
+            _checkmark.gameObject.SetActive(Model.Completed);
         }
 
-        private void OnEnable() => 
-            _completeButton.onClick.AddListener(Complete);
+        protected override void OnItemShow()
+        {
+            _completeButton.onClick.AddListener(StartCompletion);
+            Model.OnCompletedEvent += OnConditionCompleted;
+        }
 
-        private void OnDisable() => 
-            _completeButton.onClick.RemoveListener(Complete);
+        protected override void OnItemHide()
+        {
+            _completeButton.onClick.RemoveListener(StartCompletion);
+            Model.OnCompletedEvent -= OnConditionCompleted;
+        }
 
-        private void Complete() => Model.StartCompletion();
+        private void StartCompletion() => Model.StartCompletion();
+        
+        private void OnConditionCompleted(ConditionModel conditionModel) => Draw();
     }
 }

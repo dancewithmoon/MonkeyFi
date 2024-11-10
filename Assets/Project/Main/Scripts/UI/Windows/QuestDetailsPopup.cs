@@ -28,7 +28,8 @@ namespace UI.Windows
             _gameFactory = gameFactory;
         }
         
-        public override void SetPayload(QuestModel questModel) => _questModel = questModel;
+        public override void SetPayload(QuestModel questModel) => 
+            _questModel = questModel;
 
         public override void DrawWindow()
         {
@@ -38,12 +39,18 @@ namespace UI.Windows
             DrawConditions();
         }
 
-        protected override void OnWindowShow() => 
+        protected override void OnWindowShow()
+        {
             _closeButton.onClick.AddListener(Close);
+            _questModel.OnQuestCompletedEvent += OnQuestCompleted;
+        }
 
-        protected override void OnWindowHide() => 
+        protected override void OnWindowHide()
+        {
             _closeButton.onClick.RemoveListener(Close);
-        
+            _questModel.OnQuestCompletedEvent -= OnQuestCompleted;
+        }
+
         private void DrawName() => 
             _name.text = _questModel.Data.Name;
 
@@ -72,5 +79,7 @@ namespace UI.Windows
             item.gameObject.SetActive(true);
             item.Draw();
         }
+
+        private void OnQuestCompleted(QuestModel questModel) => Close();
     }
 }
