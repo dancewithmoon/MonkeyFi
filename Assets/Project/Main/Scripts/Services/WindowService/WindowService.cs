@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Infrastructure.Factory;
 using UI;
 using UI.Windows;
@@ -46,13 +47,8 @@ namespace Services
         {
             HideWindow(_currentWindow);
 
-            if (TryShowWindow(windowType))
-            {
-                if (_windows[windowType] is PayloadedWindow<TPayload> payloadedWindow)
-                    payloadedWindow.SetPayload(payload);
-
+            if (TryShowWindow(windowType, () => SetPayload(windowType, payload)))
                 _windows[windowType].DrawWindow();
-            }
         }
 
         public void ShowModalWindow(WindowType windowType)
@@ -63,13 +59,8 @@ namespace Services
 
         public void ShowModalWindow<TPayload>(WindowType windowType, TPayload payload)
         {
-            if (TryShowModalWindow(windowType))
-            {
-                if (_windows[windowType] is PayloadedWindow<TPayload> payloadedWindow)
-                    payloadedWindow.SetPayload(payload);
-
+            if (TryShowModalWindow(windowType, () => SetPayload(windowType, payload)))
                 _windows[windowType].DrawWindow();
-            }
         }
         
         public void HideWindow(WindowType windowType)
@@ -91,16 +82,28 @@ namespace Services
         }
 
         public void ClearHistory() => _history.Clear();
+        
+        private void SetPayload<TPayload>(WindowType windowType, TPayload payload)
+        {
+            if (_windows[windowType] is PayloadedWindow<TPayload> payloadedWindow)
+                payloadedWindow.SetPayload(payload);
+        }
 
-        private bool TryShowWindow(WindowType windowType)
+        private bool TryShowWindow(WindowType windowType, Action setPayload = null)
         {
             if (windowType == WindowType.None)
                 return false;
 
             if (_windows.ContainsKey(windowType))
+            {
+                setPayload?.Invoke();
                 _windows[windowType].Visible = true;
+            }
             else
+            {
                 _windows[windowType] = _gameFactory.CreateWindow(windowType);
+                setPayload?.Invoke();
+            }
 
             _currentWindow = windowType;
             
@@ -110,16 +113,22 @@ namespace Services
             return true;
         }
         
-        private bool TryShowModalWindow(WindowType windowType)
+        private bool TryShowModalWindow(WindowType windowType, Action setPayload = null)
         {
             if (windowType == WindowType.None)
                 return false;
 
             if (_windows.ContainsKey(windowType))
+            {
+                setPayload?.Invoke();
                 _windows[windowType].Visible = true;
+            }
             else
+            {
                 _windows[windowType] = _gameFactory.CreateWindow(windowType);
-            
+                setPayload?.Invoke();
+            }
+
             _windows[windowType].transform.SetAsLastSibling();
             
             return true;
