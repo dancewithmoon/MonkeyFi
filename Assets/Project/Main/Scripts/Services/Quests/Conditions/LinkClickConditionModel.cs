@@ -9,6 +9,10 @@ namespace Services.Quests.Conditions
         {
         }
 
-        public override void Complete() => Application.OpenURL(Data.Link);
+        public override void StartCompletion()
+        {
+            Application.OpenURL(Data.Link);
+            Complete();
+        }
     }
 }

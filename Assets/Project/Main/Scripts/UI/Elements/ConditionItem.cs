@@ -21,6 +21,6 @@ namespace UI.Elements
         private void OnDisable() => 
             _completeButton.onClick.RemoveListener(Complete);
 
-        private void Complete() => Model.Complete();
+        private void Complete() => Model.StartCompletion();
     }
 }

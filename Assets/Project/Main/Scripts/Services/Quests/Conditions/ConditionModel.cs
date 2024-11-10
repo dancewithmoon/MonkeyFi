@@ -6,13 +6,23 @@ namespace Services.Quests.Conditions
     public abstract class ConditionModel
     {
         public QuestConditionData Data { get; }
+        
+        public bool Completed { get; private set; }
+        
+        public event Action<ConditionModel> OnCompletedEvent;
 
         protected ConditionModel(QuestConditionData data)
         {
             Data = data;
         }
 
-        public abstract void Complete();
+        public abstract void StartCompletion();
+
+        protected void Complete()
+        {
+            Completed = true;
+            OnCompletedEvent?.Invoke(this);
+        }
 
         public static ConditionModel Create(QuestConditionData data)
         {
