@@ -10,6 +10,7 @@ using Services;
 using Services.Leaderboard;
 using Services.Library;
 using Services.Login;
+using Services.Quests;
 using Services.Referral;
 using Services.Telegram;
 using Services.Time;
@@ -57,6 +58,7 @@ namespace Infrastructure
             Container.Bind<IAuthorizationService>().To<PlayfabAuthorizationService>().AsSingle();
             Container.Bind<IUserProgressService>().To<PlayfabUserProgressService>().AsSingle();
             Container.BindInterfacesTo<PlayfabLeaderboardService>().AsSingle();
+            Container.BindInterfacesTo<QuestsService>().AsSingle();
             Container.Bind<TonWalletService>().AsSingle();
         }
 
