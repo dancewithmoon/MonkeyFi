@@ -10,7 +10,7 @@ namespace Services.Quests
     {
         public QuestData Data { get; }
         public List<ConditionModel> Conditions { get; } = new();
-        public bool Completed { get; private set; }
+        public bool Completed { get; set; }
         
         public event Action<ConditionModel> OnConditionCompletedEvent;
         public event Action<QuestModel> OnQuestCompletedEvent;

@@ -28,6 +28,27 @@ namespace Services.Quests
             }
         }
 
+        public void UpdateProgress(List<int> completedConditions, List<int> completedQuests)
+        {
+            foreach (QuestModel quest in Quests)
+            {
+                if (completedQuests != null && completedQuests.Contains(quest.Data.Id))
+                {
+                    quest.Completed = true;
+                    CompletedQuests.Add(quest);
+                }
+
+                foreach (ConditionModel condition in quest.Conditions)
+                {
+                    if (completedConditions != null && completedConditions.Contains(condition.Data.Id))
+                    {
+                        condition.Completed = true;
+                        CompletedConditions.Add(condition);
+                    }
+                }
+            }
+        }
+
         private void OnConditionCompleted(ConditionModel conditionModel)
         {
             CompletedConditions.Add(conditionModel);

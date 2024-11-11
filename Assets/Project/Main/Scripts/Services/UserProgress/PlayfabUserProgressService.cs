@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Models;
+using Newtonsoft.Json;
 using PlayFab.ClientModels;
 using Services.Library.Config;
+using Services.Quests;
 using Services.Time;
 using UnityEngine;
 using Utils;
@@ -13,6 +16,7 @@ namespace Services.UserProgress
     public class PlayfabUserProgressService : IUserProgressService
     {
         private readonly IConfigProvider _configProvider;
+        private readonly IQuestsService _questsService;
         private readonly ITimeService _timeService;
         private readonly ClickerModel _clickerModel;
         private GetUserDataResult _rawProgress;
@@ -22,10 +26,14 @@ namespace Services.UserProgress
         private int _maxEnergy;
         private int _currentEnergy;
         private int _energyRechargePerSecond;
+        
+        private List<int> _completedConditionIds;
+        private List<int> _completedQuestIds;
 
-        public PlayfabUserProgressService(IConfigProvider configProvider, ITimeService timeService, ClickerModel clickerModel)
+        public PlayfabUserProgressService(IConfigProvider configProvider, IQuestsService questsService, ITimeService timeService, ClickerModel clickerModel)
         {
             _configProvider = configProvider;
+            _questsService = questsService;
             _timeService = timeService;
             _clickerModel = clickerModel;
         }
@@ -42,9 +50,13 @@ namespace Services.UserProgress
             _maxEnergy = GetIntegerValue(ProgressKeys.MaxEnergyKey, _configProvider.Config.DefaultMaxEnergy);
             _energyRechargePerSecond = GetIntegerValue(ProgressKeys.EnergyRechargePerSecondKey, _configProvider.Config.DefaultEnergyRechargePerSecond);
             _currentEnergy = GetEnergyValue(_maxEnergy);
+            _completedConditionIds = GetIntegerList(ProgressKeys.CompletedConditions);
+            _completedQuestIds = GetIntegerList(ProgressKeys.CompletedQuests);
             
             _clickerModel.UpdateValues(_clickerPoints, _currentEnergy, _maxEnergy, _energyRechargePerSecond, _lastEnergyUpdateTime);
             _clickerModel.RechargeEnergy();
+
+            _questsService.UpdateProgress(_completedConditionIds, _completedQuestIds);
         }
 
         public async void SaveProgress()
@@ -64,6 +76,14 @@ namespace Services.UserProgress
                 return int.Parse(record.Value);
 
             return defaultValue;
+        }
+        
+        private List<int> GetIntegerList(string key)
+        {
+            if (_rawProgress.Data.TryGetValue(key, out UserDataRecord record))
+                return JsonConvert.DeserializeObject<List<int>>(record.Value);
+
+            return null;
         }
 
         private int GetEnergyValue(int defaultValue)
@@ -104,6 +124,20 @@ namespace Services.UserProgress
             {
                 _energyRechargePerSecond = _clickerModel.EnergyRechargePerSecond;
                 result[ProgressKeys.EnergyRechargePerSecondKey] = _energyRechargePerSecond.ToString();
+            }
+
+            List<int> completedConditionIds = _questsService.CompletedConditions.Select(condition => condition.Data.Id).ToList();
+            if (completedConditionIds.Count > 0 && (_completedConditionIds == null || _completedConditionIds.Count != completedConditionIds.Count))
+            {
+                _completedConditionIds = completedConditionIds;
+                result[ProgressKeys.CompletedConditions] = JsonConvert.SerializeObject(_completedConditionIds);
+            }
+            
+            List<int> completedQuestIds = _questsService.CompletedQuests.Select(quest => quest.Data.Id).ToList();
+            if (completedQuestIds.Count > 0 && (_completedQuestIds == null || _completedQuestIds.Count != completedQuestIds.Count))
+            {
+                _completedQuestIds = completedQuestIds;
+                result[ProgressKeys.CompletedQuests] = JsonConvert.SerializeObject(_completedQuestIds);
             }
 
             return result;

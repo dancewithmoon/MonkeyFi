@@ -7,7 +7,7 @@ namespace Services.Quests.Conditions
     {
         public QuestConditionData Data { get; }
         
-        public bool Completed { get; private set; }
+        public bool Completed { get; set; }
         
         public event Action<ConditionModel> OnCompletedEvent;
 
