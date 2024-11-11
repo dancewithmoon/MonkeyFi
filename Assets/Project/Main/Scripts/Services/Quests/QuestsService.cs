@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Base.States;
+﻿using System.Collections.Generic;
 using Services.Library.Quests;
 using Services.Quests.Conditions;
-using UnityEngine;
 
 namespace Services.Quests
 {
-    public class QuestsService : IQuestsService, IPreloadedInLoadMenu
+    public class QuestsService : IQuestsService
     {
         private readonly IQuestDataProvider _questDataProvider;
 
@@ -21,7 +17,7 @@ namespace Services.Quests
             _questDataProvider = questDataProvider;
         }
 
-        public Task Preload()
+        public void Initialize()
         {
             foreach (QuestData questData in _questDataProvider.QuestsData.Quests)
             {
@@ -30,7 +26,6 @@ namespace Services.Quests
                 questModel.OnQuestCompletedEvent += OnQuestCompeted;
                 Quests.Add(questModel);
             }
-            return Task.CompletedTask;
         }
 
         private void OnConditionCompleted(ConditionModel conditionModel)

@@ -34,7 +34,7 @@ namespace Infrastructure.States
             if (_authorizationService.NewlyCreatedAccount && string.IsNullOrEmpty(_telegramService.ReferralCode) == false)
                 _referralService.ConnectToReferrer(_telegramService.ReferralCode);
             
-            StateMachine.Enter<LoadProgressState>();
+            StateMachine.Enter<LoadLibraryState>();
         }
 
         public void Exit()

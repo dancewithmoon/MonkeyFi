@@ -5,6 +5,7 @@ using Base.Services;
 using Base.States;
 using Infrastructure.Factory;
 using Services;
+using Services.Leaderboard;
 using Services.TonWallet;
 using UI.Windows;
 
@@ -38,7 +39,6 @@ namespace Infrastructure.States
         {
             _toCleanUp.ForEach(obj => obj.CleanUp());
             _preload = Preload();
-
             _sceneLoader.Load(Scenes.MainScene, OnLoaded);
         }
 

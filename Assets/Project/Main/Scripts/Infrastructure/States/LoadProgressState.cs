@@ -26,8 +26,9 @@ namespace Infrastructure.States
             await Task.WhenAll(
                 _progressService.LoadProgress(),
                 _referralService.LoadReferrals());
-            
+
             _leaderboardService.LoadLeaderboard();
+            _leaderboardService.Initialize();
             OnProgressLoaded();
         }
 

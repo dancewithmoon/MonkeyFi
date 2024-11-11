@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Base.States;
 using Models;
 using PlayFab.ClientModels;
 using Services.Library.Config;
@@ -10,7 +8,7 @@ using Utils;
 
 namespace Services.Leaderboard
 {
-    public class PlayfabLeaderboardService : ILeaderboardService, IPreloadedInLoadMenu
+    public class PlayfabLeaderboardService : ILeaderboardService
     {
         private const string StatisticName = "Leaderboard";
         
@@ -27,11 +25,8 @@ namespace Services.Leaderboard
             _configProvider = configProvider;
         }
         
-        public Task Preload()
-        {
+        public void Initialize() => 
             _previousPointsValue = _clickerModel.Points;
-            return Task.CompletedTask;
-        }
 
         public async void LoadLeaderboard()
         {
